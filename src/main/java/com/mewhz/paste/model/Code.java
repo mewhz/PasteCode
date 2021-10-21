@@ -1,18 +1,21 @@
 package com.mewhz.paste.model;
 
+import java.util.Date;
+
 public class Code {
     private int id;
     private String text;
     private String type;
+    private Date date;
 
-
-    public Code(){
+    public Code() {
 
     }
 
-    public Code(String text, String type) {
+    public Code(String text, String type, Date date) {
         this.text = text;
         this.type = type;
+        this.date = date;
     }
 
     public int getId() {
@@ -39,12 +42,21 @@ public class Code {
         this.type = type;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "Code{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", type='" + type + '\'' +
+                ", date=" + date +
                 '}';
     }
 }
