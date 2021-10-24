@@ -19,7 +19,7 @@ public class CodeHtml {
                 "<head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
                 "    <title>Title</title>\n" +
-                "    <link href=\"css/prism.css\" rel=\"stylesheet\">\n" +
+                "    <link href=\"../css/prism.css\" rel=\"stylesheet\">\n" +
                 "</head>\n" +
                 "<body>\n" +
                 "    <pre>\n" +
@@ -27,7 +27,7 @@ public class CodeHtml {
         this.type = type;
         backHtml = "</code>\n" +
                 "    </pre>\n" +
-                "    <script src=\"js/prism.js\"></script>\n" +
+                "    <script src=\"../js/prism.js\"></script>\n" +
                 "    <script src=\"//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js\"></script>\n" +
                 "    <script src=\"//cdn.jsdelivr.net/npm/prismjs@1/components/prism-cpp.min.js\"></script>\n" +
                 "    <script src=\"//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js\"></script>\n" +
