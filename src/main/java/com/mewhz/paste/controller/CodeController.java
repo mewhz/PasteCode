@@ -1,49 +1,54 @@
 package com.mewhz.paste.controller;
 
-import com.mewhz.paste.model.Code;
-import com.mewhz.paste.model.CodeHtml;
-import com.mewhz.paste.utils.HtmlCreateUtils;
+
+import cn.hutool.db.Entity;
+import com.mewhz.paste.utils.CodeSQL;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
+import java.util.List;
 
 @Controller
 public class CodeController {
 
     @RequestMapping("/code")
-//    @ResponseBody
-    public String code(@RequestParam String text, @RequestParam String type){
-        Date date = new Date();
-        Code code = new Code(text, type, date);
-        fun(code);
-        return "redirect:/heart?id="+code.getDate().getTime();
-    }
+    @ResponseBody
+    public String code(@RequestParam String id){
+        String htmlFront = "<!DOCTYPE html>\n" +
+                "<html lang=\"en\">\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <title>Title</title>\n" +
+                "    <link href=\"css/prism.css\" rel=\"stylesheet\">\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <pre>\n" +
+                "      <code class=\"language-";
+        String type = null;
+        String text = null;
+        String htmlLast = "      </code>\n" +
+                "    </pre>\n" +
+                "    <script src=\"js/prism.js\"></script>\n" +
+                "    <script src=\"js/prism-c.min.js\"></script>\n" +
+                "    <script src=\"js/prism-cpp.min.js\"></script>\n" +
+                "    <script src=\"js/prism-java.min.js\"></script>\n" +
+                "</body>\n" +
+                "</html>";
+        StringBuilder html = new StringBuilder(htmlFront);
 
-    public void fun(Code code){
-        File file = new File("src/main/resources/static/data/"+code.getDate().getTime()+".txt");
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(file);
-            byte[] bytes = code.getText().getBytes(StandardCharsets.UTF_8);
-            for (byte b : bytes) {
-                out.write(b);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-    }}
+        CodeSQL codesql = new CodeSQL();
+        List<Entity> list = codesql.findCode(id);
+
+        type = (String) list.get(0).get("type");
+        text = (String) list.get(0).get("text");
+
+        text = text.replaceAll("\n", "<br>");
+        text = text.replaceAll(" ", "&nbsp;");
+
+        html.append(type).append("\">").append(text).append(htmlLast);
+
+        return html.toString();
+    }
 }
