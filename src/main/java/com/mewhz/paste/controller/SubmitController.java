@@ -1,18 +1,11 @@
 package com.mewhz.paste.controller;
 
 import com.mewhz.paste.model.Code;
-import com.mewhz.paste.model.CodeHtml;
 import com.mewhz.paste.utils.CodeSQL;
-import com.mewhz.paste.utils.HtmlCreateUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Controller

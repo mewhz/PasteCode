@@ -44,6 +44,8 @@ public class CodeController {
         type = (String) list.get(0).get("type");
         text = (String) list.get(0).get("text");
 
+        text = text.replaceAll("<", "&lt;");
+        text = text.replaceAll(">", "&gt;");
         text = text.replaceAll("\n", "<br>");
         text = text.replaceAll(" ", "&nbsp;");
 
