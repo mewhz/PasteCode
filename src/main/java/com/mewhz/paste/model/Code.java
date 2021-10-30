@@ -7,15 +7,27 @@ public class Code {
     private String text;
     private String type;
     private Date date;
-
+    private String ip;
+    private String userAgent;
     public Code() {
 
     }
 
-    public Code(String text, String type, Date date) {
+    public Code(int id, String text, String type, Date date, String ip, String userAgent) {
+        this.id = id;
         this.text = text;
         this.type = type;
         this.date = date;
+        this.ip = ip;
+        this.userAgent = userAgent;
+    }
+
+    public Code(String text, String type, Date date, String ip, String userAgent) {
+        this.text = text;
+        this.type = type;
+        this.date = date;
+        this.ip = ip;
+        this.userAgent = userAgent;
     }
 
     public int getId() {
@@ -50,13 +62,19 @@ public class Code {
         this.date = date;
     }
 
-    @Override
-    public String toString() {
-        return "Code{" +
-                "id=" + id +
-                ", text='" + text + '\'' +
-                ", type='" + type + '\'' +
-                ", date=" + date +
-                '}';
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
     }
 }

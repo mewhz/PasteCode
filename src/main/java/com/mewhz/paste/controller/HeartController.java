@@ -1,21 +1,25 @@
 package com.mewhz.paste.controller;
 
+import cn.hutool.core.net.NetUtil;
+import com.mewhz.paste.utils.IPUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class HeartController {
 
     @RequestMapping("heart")
     @ResponseBody
-    public String heart(){
+    @CrossOrigin
+    public String heart(HttpServletRequest request){
+        String userAgent = request.getHeader("user-agent");
+        System.out.println(userAgent);
+        String ip = IPUtils.getIpAddr(request);
+        System.out.println(ip);
         return "success";
     }
 }

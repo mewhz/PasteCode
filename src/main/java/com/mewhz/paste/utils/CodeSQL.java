@@ -18,6 +18,9 @@ public class CodeSQL {
                     .set("text", code.getText())
                     .set("time_id", code.getDate().getTime()+"")
                     .set("type", code.getType())
+                    .set("date", code.getDate())
+                    .set("ip", code.getIp())
+                    .set("user_agent", code.getUserAgent())
             );
         } catch (SQLException e) {
             e.printStackTrace();
