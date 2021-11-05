@@ -3,6 +3,7 @@ package com.mewhz.paste.utils;
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
 import com.mewhz.paste.model.Code;
+import com.mewhz.paste.model.IdentifyingCode;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,6 +12,10 @@ public class CodeSQL {
     public CodeSQL (){
 
     }
+
+    /**
+        插入代码等信息到数据库
+     */
     public void insertCode(Code code){
         try {
             Db.use().insert(
@@ -27,6 +32,22 @@ public class CodeSQL {
         }
     }
 
+    /**
+     *  插入代码识别码等信息到数据库
+     */
+    public void insertIdentifyingCode(IdentifyingCode identifyingCode){
+        try{
+            Db.use().insert(
+                    Entity.create("identifying_code")
+                    .set("identifying", identifyingCode.getIdentifying())
+                    .set("time_id", identifyingCode.getTimeId())
+            );
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Entity> findCode(String timeId){
         List<Entity> codes = null;
         try {
@@ -37,5 +58,18 @@ public class CodeSQL {
             e.printStackTrace();
         }
         return codes;
+    }
+
+    public List<Entity> findIdentifyingCode(String identifying){
+        List<Entity> identifyingCodes = null;
+        try{
+            identifyingCodes = Db.use().query("select text, type, date, code.time_id\n" +
+                    "from code inner join identifying_code\n" +
+                    "    on code.time_id = identifying_code.time_id\n" +
+                    "    where identifying = ?", identifying);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return identifyingCodes;
     }
 }

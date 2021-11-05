@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/prism.css" rel="stylesheet">
+</head>
+<body>
+  <details>
+    <summary>NiHao</summary>
+    <pre>
+      <code class="language-cpp">
+
+using namespace std;
+const int N = 205;
+int score[5][5] = {{0,0,1,1,0},{1,0,0,1,0},{0,1,0,0,1},{0,0,1,0,1},{1,1,0,0,0}};
+int a,b,n;
+int na[N],nb[N];
+int main(){
+	scanf("%d%d%d", &n,&a,&b);
+	int A = 0, B = 0;
+	for (int i = 0; i < a; i++)	scanf("%d", &na[i]);
+	for (int i = 0; i < b; i++)	scanf("%d", &nb[i]);
+	for (int i = 0; i < n; i++){
+		A += score[na[i % a]][nb[i % b]];
+		B += score[nb[i % b]][na[i % a]];
+	}
+	cout << A << " " << B;
+	return 0;
+}
+      </code>
+    </pre>
+  </details>
+  <details>
+    <summary>One</summary>
+    <p>World</p>
+  </details>
+  <script src="js/prism.js"></script>
+  <script src="js/prism-c.min.js"></script>
+  <script src="js/prism-cpp.min.js"></script>
+  <script src="js/prism-java.min.js"></script>
+</body>
+</html>

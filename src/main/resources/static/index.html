@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>贴代码</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="../static/css/index.css">
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.4.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
 </head>
 <body class="container">
 <div class="container-fluid">
@@ -19,6 +18,9 @@
             <form action="/submit" method="post" class="form-horizontal">
                 <div class="controls">
                     <textarea class="form-control" name="text" rows="6" cols="80"></textarea>
+                </div>
+                <div class="controls">
+                <input class="form-control" name="identifying" type="text" placeholder="识别码"/>
                 </div>
                 <div class="control-group">
                     <select class="form-control" name="type">

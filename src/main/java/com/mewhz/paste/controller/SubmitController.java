@@ -1,6 +1,7 @@
 package com.mewhz.paste.controller;
 
 import com.mewhz.paste.model.Code;
+import com.mewhz.paste.model.IdentifyingCode;
 import com.mewhz.paste.utils.CodeSQL;
 import com.mewhz.paste.utils.IPUtils;
 import org.springframework.stereotype.Controller;
@@ -17,14 +18,16 @@ public class SubmitController {
     @RequestMapping("/submit")
 //    @ResponseBody
     @CrossOrigin
-    public String code(@RequestParam String text, @RequestParam String type, HttpServletRequest request){
+    public String code(@RequestParam String text, @RequestParam String type, @RequestParam String identifying ,HttpServletRequest request){
         Date date = new Date();
         String ip = IPUtils.getIpAddr(request);
         String userAgent = request.getHeader("User-Agent");
         Code code = new Code(text, type, date, ip, userAgent);
+        IdentifyingCode identifyingCode = new IdentifyingCode(identifying, date.getTime()+"");
         System.out.println(code);
         CodeSQL codeSql = new CodeSQL();
         codeSql.insertCode(code);
+        codeSql.insertIdentifyingCode(identifyingCode);
         return "redirect:/code?id=" + code.getDate().getTime();
     }
 }

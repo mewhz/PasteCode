@@ -1,6 +1,5 @@
 package com.mewhz.paste.controller;
 
-import cn.hutool.core.net.NetUtil;
 import com.mewhz.paste.utils.IPUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
