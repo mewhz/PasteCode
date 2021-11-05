@@ -27,7 +27,9 @@ public class SubmitController {
         System.out.println(code);
         CodeSQL codeSql = new CodeSQL();
         codeSql.insertCode(code);
-        codeSql.insertIdentifyingCode(identifyingCode);
+        if (!"".equals(identifying)){
+            codeSql.insertIdentifyingCode(identifyingCode);
+        }
         return "redirect:/code?id=" + code.getDate().getTime();
     }
 }

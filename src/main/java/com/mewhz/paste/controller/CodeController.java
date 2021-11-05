@@ -15,7 +15,7 @@ public class CodeController {
 
     @RequestMapping("/code")
     @ResponseBody
-    public String code(@RequestParam String id){
+    public String code(@RequestParam String id) {
         String htmlFront = "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -30,13 +30,17 @@ public class CodeController {
         String text = null;
         String htmlLast = "      </code>\n" +
                 "    </pre>\n" +
-                "    <script src=\"js/prism.js\"></script>\n" +
-                "    <script src=\"js/prism-c.min.js\"></script>\n" +
-                "    <script src=\"js/prism-cpp.min.js\"></script>\n" +
-                "    <script src=\"js/prism-java.min.js\"></script>\n" +
-                "</body>\n" +
+                "    <script src=\"js/prism.js\"></script>\n";
+
+        String htmlEnd = "</body>\n" +
                 "</html>";
         StringBuilder html = new StringBuilder(htmlFront);
+
+        String cHtml = "<script src=\"js/prism-c.min.js\"></script>\n" +
+                        "<script src=\"js/prism-cpp.min.js\"></script>\n";
+        String javaHtml = "<script src=\"js/prism-java.min.js\"></script>\n";
+        String pythonHtml = "<script src=\"js/prism-python.min.js\"></script>\n";
+
 
         CodeSQL codesql = new CodeSQL();
         List<Entity> list = codesql.findCode(id);
@@ -50,6 +54,15 @@ public class CodeController {
         text = text.replaceAll(" ", "&nbsp;");
 
         html.append(type).append("\">").append(text).append(htmlLast);
+        if ("cpp".equals(type)){
+            html.append(cHtml);
+        }
+        else    if ("java".equals(type)){
+            html.append(javaHtml);
+        }
+        else    if ("python".equals(type)){
+            html.append(pythonHtml);
+        }
 
         return html.toString();
     }
