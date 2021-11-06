@@ -13,11 +13,17 @@ import java.util.List;
  * @author mewhz
  */
 @Controller
-public class ListController {
+
+public  class ListController {
 
     @ResponseBody
-    @RequestMapping("/list")
-    public String list(@RequestParam String id){
+    @RequestMapping(value = "/list")
+    public String list(@RequestParam(value = "id", required = false) String id ){
+
+        if (id == null || "".equals(id)) {
+            return "<h1>未输入标识码</h1>";
+        }
+
         String htmlBegin = "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
@@ -69,4 +75,5 @@ public class ListController {
 
         return html.toString();
     }
+
 }

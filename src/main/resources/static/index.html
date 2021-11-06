@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
 </head>
 <body class="container">
+<script type="text/javascript" src="js/jquery-3.6.0.min.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12">
@@ -23,7 +25,7 @@
                 </div>
                 <div class="control-group">
                     <label>
-                        <input class="form-control" name="identifying" type="text" placeholder="识别码(非必填)"/>
+                        <input class="form-control" name="identifying" type="text" placeholder="识别码(非必填)" id="identifying"/>
                     </label>
                     <label>
                         <select class="form-control" name="type">
@@ -37,6 +39,7 @@
                     <button class="btn btn-success" type="submit">提交</button>
                 </div>
             </form>
+            <a id="list">根据识别码查找代码</a>
         </div>
     </div>
 </div>
