@@ -1,4 +1,4 @@
-url = jdbc:mysql://127.0.0.1:3306/code_mewhz_com?useSSL=false
+url = jdbc:mysql://127.0.0.1:3306/code_mewhz_com?useSSL=false&characterEncoding=UTF-8
 
 user = root
 pass = root

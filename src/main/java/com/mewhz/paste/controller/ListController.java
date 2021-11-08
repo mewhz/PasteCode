@@ -28,7 +28,7 @@ public  class ListController {
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
-                "    <title>Title</title>\n" +
+                "    <title>贴代码</title>\n" +
                 "    <link href=\"css/prism.css\" rel=\"stylesheet\">\n" +
                 "</head>\n" +
                 "<body>";

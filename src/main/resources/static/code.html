@@ -4,17 +4,29 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link href="css/prism.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap.min.css"/>
+    <link href="https://cdn.bootcdn.net/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
 </head>
 <body>
     <pre>
-      <code class="language-python">
-print("Hello World")
+      <code class="language-cpp" id="code">#include &lt;iostream&gt;
+using namespace std;
+int main() {
+    int n;
+    cin >> n;
+    cout << n << endl;
+    return 0;
+}
       </code>
     </pre>
+    <button id="button" class="btn btn-success">一键复制</button>
     <script src="js/prism.js"></script>
-<!--    <script src="js/prism-c.min.js"></script>-->
-<!--    <script src="js/prism-cpp.min.js"></script>-->
-    <script src="js/prism-java.min.js"></script>
-    <script src="js/prism-python-min.js"></script>
+    <script src="js/prism-c.min.js"></script>
+    <script src="js/prism-cpp.min.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/code.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<!--    <script src="js/prism-java.min.js"></script>-->
+<!--    <script src="js/prism-python.min.js"></script>-->
 </body>
 </html>

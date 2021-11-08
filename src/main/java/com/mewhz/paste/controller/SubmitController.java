@@ -16,15 +16,14 @@ import java.util.Date;
 public class SubmitController {
 
     @RequestMapping("/submit")
-//    @ResponseBody
     @CrossOrigin
-    public String code(@RequestParam String text, @RequestParam String type, @RequestParam String identifying ,HttpServletRequest request){
+    public String code(@RequestParam String text, @RequestParam String type, @RequestParam String identifying ,@RequestParam String remark,HttpServletRequest request){
         Date date = new Date();
         String ip = IPUtils.getIpAddr(request);
         String userAgent = request.getHeader("User-Agent");
-        Code code = new Code(text, type, date, ip, userAgent);
+        System.out.println(remark);
+        Code code = new Code(text, type, date, ip, userAgent, remark);
         IdentifyingCode identifyingCode = new IdentifyingCode(identifying, date.getTime()+"");
-        System.out.println(code);
         CodeSQL codeSql = new CodeSQL();
         codeSql.insertCode(code);
         if (!"".equals(identifying)){

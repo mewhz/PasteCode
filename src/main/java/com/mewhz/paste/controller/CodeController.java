@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+/**
+ * @author mewhz
+ */
 @Controller
 public class CodeController {
 
@@ -20,17 +23,25 @@ public class CodeController {
                 "<html lang=\"en\">\n" +
                 "<head>\n" +
                 "    <meta charset=\"UTF-8\">\n" +
-                "    <title>Title</title>\n" +
+                "    <title>";
+        String htmlTitle ="</title>\n" +
                 "    <link href=\"css/prism.css\" rel=\"stylesheet\">\n" +
+                "    <link rel=\"stylesheet\" href=\"css/bootstrap.min.css\"/>\n" +
+                "    <link href=\"https://cdn.bootcdn.net/ajax/libs/toastr.js/latest/css/toastr.min.css\" rel=\"stylesheet\">"+
                 "</head>\n" +
                 "<body>\n" +
                 "    <pre>\n" +
-                "      <code class=\"language-";
+                "      <code id=\"code\" class=\"language-";
         String type = null;
         String text = null;
+        String remark = null;
         String htmlLast = "      </code>\n" +
                 "    </pre>\n" +
-                "    <script src=\"js/prism.js\"></script>\n";
+                "<button id=\"button\" class=\"btn btn-success\">一键复制</button>"+
+                "    <script src=\"js/prism.js\"></script>\n"+
+                "<script src=\"js/jquery-3.6.0.min.js\"></script>\n" +
+                        "<script src=\"js/code.js\"></script>\n" +
+                        "<script src=\"https://cdn.bootcdn.net/ajax/libs/toastr.js/latest/js/toastr.min.js\"></script>";
 
         String htmlEnd = "</body>\n" +
                 "</html>";
@@ -47,13 +58,17 @@ public class CodeController {
 
         type = (String) list.get(0).get("type");
         text = (String) list.get(0).get("text");
+        remark = (String) list.get(0).get("remark");
+        if ("".equals(remark)){
+            remark = "贴代码";
+        }
 
         text = text.replaceAll("<", "&lt;");
         text = text.replaceAll(">", "&gt;");
         text = text.replaceAll("\n", "<br>");
         text = text.replaceAll(" ", "&nbsp;");
 
-        html.append(type).append("\">").append(text).append(htmlLast);
+        html.append(remark).append(htmlTitle).append(type).append("\">").append(text).append(htmlLast);
         if ("cpp".equals(type)){
             html.append(cHtml);
         }
@@ -63,6 +78,7 @@ public class CodeController {
         else    if ("python".equals(type)){
             html.append(pythonHtml);
         }
+        html.append(htmlEnd);
 
         return html.toString();
     }

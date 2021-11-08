@@ -26,6 +26,7 @@ public class CodeSQL {
                     .set("date", code.getDate())
                     .set("ip", code.getIp())
                     .set("user_agent", code.getUserAgent())
+                    .set("remark", code.getRemark())
             );
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,6 +49,9 @@ public class CodeSQL {
         }
     }
 
+    /**
+     * 根据 id 取出 code 数据
+     */
     public List<Entity> findCode(String timeId){
         List<Entity> codes = null;
         try {

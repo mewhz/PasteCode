@@ -9,25 +9,28 @@ public class Code {
     private Date date;
     private String ip;
     private String userAgent;
+    private String remark;
     public Code() {
 
     }
 
-    public Code(int id, String text, String type, Date date, String ip, String userAgent) {
+    public Code(int id, String text, String type, Date date, String ip, String userAgent, String remark) {
         this.id = id;
         this.text = text;
         this.type = type;
         this.date = date;
         this.ip = ip;
         this.userAgent = userAgent;
+        this.remark = remark;
     }
 
-    public Code(String text, String type, Date date, String ip, String userAgent) {
+    public Code(String text, String type, Date date, String ip, String userAgent, String remark) {
         this.text = text;
         this.type = type;
         this.date = date;
         this.ip = ip;
         this.userAgent = userAgent;
+        this.remark = remark;
     }
 
     public int getId() {
@@ -76,5 +79,26 @@ public class Code {
 
     public void setUserAgent(String userAgent) {
         this.userAgent = userAgent;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    @Override
+    public String toString() {
+        return "Code{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", type='" + type + '\'' +
+                ", date=" + date +
+                ", ip='" + ip + '\'' +
+                ", userAgent='" + userAgent + '\'' +
+                ", remark='" + remark + '\'' +
+                '}';
     }
 }
