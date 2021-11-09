@@ -52,11 +52,17 @@ public  class ListController {
 
         List<Entity> list = codeSQL.findIdentifyingCode(id);
 
+        if (list.size() == 0) {
+            return "<h1>未找到该识别码</h1>";
+        }
+
         for (Entity e : list){
             html.append(summaryBegin);
             html.append(e.get("date"));
             html.append(" ");
             html.append(e.get("time_id"));
+            html.append(" ");
+            html.append(e.get("remark"));
             html.append(summaryEnd);
             html.append(e.get("type"));
             html.append("\">");

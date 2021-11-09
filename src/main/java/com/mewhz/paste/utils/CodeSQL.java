@@ -67,7 +67,7 @@ public class CodeSQL {
     public List<Entity> findIdentifyingCode(String identifying){
         List<Entity> identifyingCodes = null;
         try{
-            identifyingCodes = Db.use().query("select text, type, date, code.time_id\n" +
+            identifyingCodes = Db.use().query("select text, type, date, code.time_id, remark\n" +
                     "from code inner join identifying_code\n" +
                     "    on code.time_id = identifying_code.time_id\n" +
                     "    where identifying = ?", identifying);
