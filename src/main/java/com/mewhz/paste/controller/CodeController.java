@@ -37,9 +37,10 @@ public class CodeController {
         String remark = null;
         String htmlLast = "      </code>\n" +
                 "    </pre>\n" +
-                "<button id=\"button\" class=\"btn btn-success\">一键复制</button>"+
+                "<button id=\"button\" class=\"btn btn-success\" class=\"btn btn-success\" onclick=\"copy()\" data-clipboard-target=\"#code\" data-clipboard-action=\"copy\">一键复制</button>"+
                 "    <script src=\"js/prism.js\"></script>\n"+
                 "<script src=\"js/jquery-3.6.0.min.js\"></script>\n" +
+                "<script src=\"https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js\"></script>\n"+
                         "<script src=\"js/code.js\"></script>\n" +
                         "<script src=\"https://cdn.bootcdn.net/ajax/libs/toastr.js/latest/js/toastr.min.js\"></script>";
 
