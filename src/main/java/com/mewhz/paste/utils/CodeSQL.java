@@ -2,13 +2,16 @@ package com.mewhz.paste.utils;
 
 import cn.hutool.db.Db;
 import cn.hutool.db.Entity;
+import cn.hutool.db.ds.DSFactory;
 import com.mewhz.paste.model.Code;
 import com.mewhz.paste.model.IdentifyingCode;
 
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.List;
 
 public class CodeSQL {
+    private DataSource ds = DSFactory.get();
     public CodeSQL (){
 
     }
@@ -18,7 +21,7 @@ public class CodeSQL {
      */
     public void insertCode(Code code){
         try {
-            Db.use().insert(
+            Db.use(ds).insert(
                     Entity.create("code")
                     .set("text", code.getText())
                     .set("time_id", code.getDate().getTime()+"")
@@ -38,7 +41,7 @@ public class CodeSQL {
      */
     public void insertIdentifyingCode(IdentifyingCode identifyingCode){
         try{
-            Db.use().insert(
+            Db.use(ds).insert(
                     Entity.create("identifying_code")
                     .set("identifying", identifyingCode.getIdentifying())
                     .set("time_id", identifyingCode.getTimeId())
@@ -55,7 +58,7 @@ public class CodeSQL {
     public List<Entity> findCode(String timeId){
         List<Entity> codes = null;
         try {
-            codes = Db.use().findAll(
+            codes = Db.use(ds).findAll(
                     Entity.create("code").set("time_id", "= " + timeId)
             );
         } catch (SQLException e) {
@@ -67,7 +70,7 @@ public class CodeSQL {
     public List<Entity> findIdentifyingCode(String identifying){
         List<Entity> identifyingCodes = null;
         try{
-            identifyingCodes = Db.use().query("select text, type, date, code.time_id, remark\n" +
+            identifyingCodes = Db.use(ds).query("select text, type, date, code.time_id, remark\n" +
                     "from code inner join identifying_code\n" +
                     "    on code.time_id = identifying_code.time_id\n" +
                     "    where identifying = ?", identifying);
