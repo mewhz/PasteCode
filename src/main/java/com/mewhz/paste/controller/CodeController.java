@@ -2,22 +2,24 @@ package com.mewhz.paste.controller;
 
 
 import cn.hutool.db.Entity;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.mewhz.paste.utils.CodeSQL;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 /**
  * @author mewhz
  */
-@Controller
+@RestController
 public class CodeController {
 
     @RequestMapping("/code")
-    @ResponseBody
     public String code(@RequestParam String id) {
         String htmlFront = "<!DOCTYPE html>\n" +
                 "<html lang=\"en\">\n" +
@@ -82,5 +84,35 @@ public class CodeController {
         html.append(htmlEnd);
 
         return html.toString();
+    }
+
+
+    @RequestMapping("/codes")
+    public JSONObject codes(@RequestParam String id){
+
+        JSONObject json = JSONUtil.createObj();
+        String type = null;
+        String text = null;
+        String remark = null;
+
+        CodeSQL codesql = new CodeSQL();
+        List<Entity> list = codesql.findCode(id);
+
+        type = (String) list.get(0).get("type");
+        text = (String) list.get(0).get("text");
+        remark = (String) list.get(0).get("remark");
+
+//        text = text.replaceAll("<", "&lt;");
+//        text = text.replaceAll(">", "&gt;");
+//        text = text.replaceAll("\n", "<br>");
+//        text = text.replaceAll(" ", "&nbsp;");
+
+
+        json.append("text", text);
+        json.append("type", type);
+        json.append("remark", remark);
+
+
+        return json;
     }
 }

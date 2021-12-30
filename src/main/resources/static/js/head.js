@@ -1,8 +1,12 @@
+
+
 $(document).ready(()=>{
-    $.getJSON("/head", (result)=>{
+    $.getJSON("/codes?id=1637767613075", (result)=>{
         console.log(result);
-        $.each(result, (i, temp)=>{
-            $("h1").append(temp + " ");
-        });
+        console.log(result.type);
+        $("#code").attr("class","language-java");
+        $("#code").text(result.text);
+        $("title").text(result.remark);
+        Prism.highlightAll();
     })
 });
