@@ -16,6 +16,9 @@ public class LoginController {
     @RequestMapping("/login")
     public String login(@RequestParam String user, @RequestParam String pass){
         System.out.println(user + " " + pass);
-        return user + " " + pass;
+        if (!"admin".equals(user) || !"admin".equals(pass)){
+            return "ERROR";
+        }
+        return "success";
     }
 }
