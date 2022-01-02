@@ -16,74 +16,8 @@ import java.util.List;
 
 @RestController
 public  class ListController {
-
-    @RequestMapping(value = "/list")
-    public String list(@RequestParam(value = "id", required = false) String id ){
-
-        if (id == null || "".equals(id)) {
-            return "<h1>未输入标识码</h1>";
-        }
-
-        String htmlBegin = "<!DOCTYPE html>\n" +
-                "<html lang=\"en\">\n" +
-                "<head>\n" +
-                "    <meta charset=\"UTF-8\">\n" +
-                "    <title>贴代码</title>\n" +
-                "    <link href=\"css/prism.css\" rel=\"stylesheet\">\n" +
-                "</head>\n" +
-                "<body>";
-        String summaryBegin = "<details>\n" +
-                "    <summary>";
-        String summaryEnd = "</summary>\n" +
-                "    <pre>\n" +
-                "      <code class=\"language-";
-        String detailsEnd = "      </code>\n" +
-                "    </pre>\n" +
-                "  </details>\n";
-        String htmlEnd = "  <script src=\"js/prism.js\"></script>\n" +
-                "  <script src=\"js/prism-c.min.js\"></script>\n" +
-                "  <script src=\"js/prism-cpp.min.js\"></script>\n" +
-                "  <script src=\"js/prism-java.min.js\"></script>\n" +
-                "</body>\n" +
-                "</html>";
-        StringBuilder html = new StringBuilder(htmlBegin);
-
-        CodeSQL codeSQL = new CodeSQL();
-
-        List<Entity> list = codeSQL.findIdentifyingCode(id);
-
-        if (list.size() == 0) {
-            return "<h1>未找到该识别码</h1>";
-        }
-
-        for (Entity e : list){
-            html.append(summaryBegin);
-            html.append(e.get("date"));
-            html.append(" ");
-            html.append(e.get("time_id"));
-            html.append(" ");
-            html.append(e.get("remark"));
-            html.append(summaryEnd);
-            html.append(e.get("type"));
-            html.append("\">");
-
-            String text = (String) e.get("text");
-
-            text = text.replaceAll("<", "&lt;");
-            text = text.replaceAll(">", "&gt;");
-            text = text.replaceAll("\n", "<br>");
-            text = text.replaceAll(" ", "&nbsp;");
-
-            html.append(text);
-            html.append(detailsEnd);
-        }
-        html.append(htmlEnd);
-
-        return html.toString();
-    }
-
-
-    @RequestMapping("/lists")
+    
+    @RequestMapping("/list")
     public ModelAndView lists(@RequestParam(value = "id", required = false) String id ){
 
         ModelAndView mav = new ModelAndView("/list.html");
