@@ -22,7 +22,7 @@ public class CodeController {
 
     @RequestMapping("/code")
     public ModelAndView code(@RequestParam String id){
-        ModelAndView mav = new ModelAndView("/code.html?id=" + id);
+        ModelAndView mav = new ModelAndView("/code.html");
         return mav;
     }
 
