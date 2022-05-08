@@ -1,50 +1,40 @@
 package com.mewhz.paste.controller;
 
 
-import cn.hutool.db.Entity;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
-import com.mewhz.paste.utils.CodeSQL;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
+import com.mewhz.paste.model.Code;
+import com.mewhz.paste.service.CodeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mewhz
  */
 @RestController
+@RequestMapping("/code")
 public class CodeController {
 
-    @RequestMapping("/code")
-    public ModelAndView code(@RequestParam String id){
-        ModelAndView mav = new ModelAndView("/code.html");
-        return mav;
+    @Autowired
+    private CodeService codeService;
+
+    @GetMapping("/")
+    public List<Code> findAll(){
+        return codeService.list();
     }
 
-    @RequestMapping("/selectCode")
-    public JSONObject selectCode(@RequestParam String id){
+    @PostMapping("/")
+    public Map<String, Object> save(@RequestBody Code code){
+        Map<String, Object> result = new HashMap<>();
+        codeService.save(code);
 
-        JSONObject json = JSONUtil.createObj();
-        String type = null;
-        String text = null;
-        String remark = null;
+        System.out.println(code);
 
-        CodeSQL codesql = new CodeSQL();
-        List<Entity> list = codesql.findCode(id);
-
-        type = (String) list.get(0).get("type");
-        text = (String) list.get(0).get("text");
-        remark = (String) list.get(0).get("remark");
-
-        json.append("text", text);
-        json.append("type", type);
-        json.append("remark", remark);
-
-        return json;
+        result.put("status", 200);
+        result.put("msg", "success");
+        result.put("codeId", code.getCodeId());
+        return result;
     }
 }
