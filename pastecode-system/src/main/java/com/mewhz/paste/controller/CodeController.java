@@ -37,4 +37,9 @@ public class CodeController {
         result.put("codeId", code.getCodeId());
         return result;
     }
+
+    @GetMapping("/{id}")
+    public Code findById(@PathVariable("id") Integer id){
+        return codeService.getById(id);
+    }
 }

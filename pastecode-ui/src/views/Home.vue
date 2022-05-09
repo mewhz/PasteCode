@@ -36,18 +36,18 @@ export default {
   name: 'Home',
   data() {
     return {
-      textarea: "",
+      textarea: 'print("Hello World!")',
       types: [{
-        value: 'Java',
+        value: 'java',
         label: 'Java'
       },{
-        value: 'Python',
+        value: 'python',
         label: 'Python'
       },{
-        value: 'C/C++',
+        value: 'cpp',
         label: 'C/C++'
       }],
-      value: '',
+      value: 'python',
     }
   },
   methods: {
@@ -69,11 +69,9 @@ export default {
     },
     // 提交代码
     jump(id) {
-      this.$axios.get("http://127.0.0.1:8080/code/" + id).then((res) => {
-
-      });
+      this.$router.push('/code/' + id);
     }
-  }
+  },
 }
 </script>
 
