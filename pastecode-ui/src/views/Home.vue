@@ -7,12 +7,16 @@
             <small>paste code</small>
           </h1>
         </div>
+    </el-col>
+    <el-col :offset="5" :xs="8" :sm="6" :md="8" :lg="9" :xl="11">
         <el-input
             type="textarea"
             placeholder="粘贴你的代码到这里"
             :autosize="{minRows: 8, maxRows: 20}"
             v-model="textarea">
         </el-input>
+    </el-col>
+    <el-col :offset="5" :xs="8" :sm="6" :md="8" :lg="9" :xl="11">
         <div class="mt-5">
           <el-select v-model="value" placeholder="请选择">
             <el-option
@@ -22,6 +26,9 @@
                 :value="item.value">
             </el-option>
           </el-select>
+          <div class="f-l mr-5">
+            <el-input v-model="id" placeholder="代码 id" />
+          </div>
         </div>
       <div class="mt-5">
         <el-button type="primary" @click="submit">提交</el-button>
@@ -48,6 +55,7 @@ export default {
         label: 'C/C++'
       }],
       value: 'python',
+      id: '',
     }
   },
   methods: {
@@ -87,5 +95,11 @@ small{
 }
 .mt-5{
   margin-top: 5px;
+}
+.f-l{
+  float: left;
+}
+.mr-5{
+  margin-right: 5px;
 }
 </style>
