@@ -17,9 +17,22 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/code/:id',
+    /*
+      :id 代表传递 id 参数
+     */
+    path: '/code/id/:id',
     name: 'Code',
     component: Code
+  },
+  {
+    path: '/code/title/:codeTitle',
+    name: 'Title',
+    component: () => import('../views/Title.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login')
   }
 ]
 

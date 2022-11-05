@@ -1,9 +1,8 @@
-package com.mewhz.paste.model;
+package com.mewhz.paste.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,16 +11,16 @@ import lombok.ToString;
 /**
  * @author mewhz
  */
+@TableName("code_info")
 @Data
 @ToString
-@TableName("code")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Code {
+public class CodeInfo {
 
-    @TableId(value = "code_id", type = IdType.AUTO)
+    @TableId(value = "code_info_id", type = IdType.AUTO)
+    private Integer codeInfoId;
     private Integer codeId;
-    private String codeText;
-    private String codeType;
-    private String codeDate;
+    private String  userAccount;
+    private String  codeInfoDate;
 }

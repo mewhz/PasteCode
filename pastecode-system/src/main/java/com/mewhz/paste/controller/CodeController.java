@@ -1,7 +1,7 @@
 package com.mewhz.paste.controller;
 
 
-import com.mewhz.paste.model.Code;
+import com.mewhz.paste.model.entity.Code;
 import com.mewhz.paste.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +38,24 @@ public class CodeController {
         return result;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public Code findById(@PathVariable("id") Integer id){
         return codeService.getById(id);
     }
+
+    @GetMapping("/title/{codeTitle}")
+    public List<Code> findByCodeTitle(@PathVariable String codeTitle){
+        return codeService.findByCodeTitle(codeTitle);
+    }
+
+    @GetMapping("/page/{codeTitle}/{current}")
+    public List<Code> findByCodeTitlePage(@PathVariable Integer current, @PathVariable String codeTitle) {
+        return codeService.findByCodeTitlePage(current, codeTitle);
+    }
+
+    @GetMapping("/page/total/{codeTitle}")
+    public Long getCodeTitleTotal(@PathVariable String codeTitle) {
+        return codeService.getCodeTitleTotal(codeTitle);
+    }
+
 }

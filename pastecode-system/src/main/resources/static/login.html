@@ -12,3 +12,15 @@
 </form>
 </body>
 </html>
+<script>
+    let url = "http://127.0.0.1:9090/?id=";
+    fetch(url + "1")
+        .then(res => res.json())
+        .then(json => console.log(json.result))
+    fetch(url + "2")
+        .then(res => res.json())
+        .then(json => console.log(json.result))
+    fetch(url + "3")
+        .then(res => res.json())
+        .then(json => console.log(json.result))
+</script>

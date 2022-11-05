@@ -8,17 +8,19 @@
   },
   "dependencies": {
     "axios": "^0.27.2",
-    "core-js": "^3.6.5",
-    "element-ui": "^2.15.8",
-    "prismjs": "^1.28.0",
-    "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "babel-plugin-prismjs": "^2.1.0",
+    "copy-to-clipboard": "^3.3.2",
+    "core-js": "^3.25.5",
+    "element-ui": "^2.15.10",
+    "prismjs": "^1.29.0",
+    "vue": "^2.7.13",
+    "vue-router": "^3.6.5"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "~4.5.15",
-    "@vue/cli-plugin-router": "~4.5.15",
-    "@vue/cli-service": "~4.5.15",
-    "vue-template-compiler": "^2.6.11"
+    "@vue/cli-plugin-babel": "^4.5.19",
+    "@vue/cli-plugin-router": "^4.5.19",
+    "@vue/cli-service": "^4.5.19",
+    "vue-template-compiler": "^2.7.13"
   },
   "browserslist": [
     "> 1%",
