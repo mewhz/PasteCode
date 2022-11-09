@@ -18,7 +18,7 @@ import lombok.ToString;
 @NoArgsConstructor
 public class User {
     @TableId(value = "user_id", type = IdType.AUTO)
-    private int id;
+    private Integer id;
     private String userName;
     private String userAccount;
     private String userPassword;

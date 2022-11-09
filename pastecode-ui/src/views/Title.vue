@@ -1,8 +1,13 @@
 <template>
   <div>
-  <el-collapse accordion>
-    <el-collapse-item v-for="(value, index ) in codeArray" :key="index" :title="value.codeTitle">
-      <el-link :underline="false"><i class="el-icon-view"></i>查看详情</el-link>
+  <el-collapse accordion v-model="activeNames">
+    <el-collapse-item v-for="(value, index ) in codeArray"
+                      :key="index"
+                      :title="value.codeTitle"
+                      :name="index">
+      <el-link :underline="false" @click="jumpDetails(value.codeId)">
+        <i class="el-icon-view"></i>查看详情
+      </el-link>
       <MyCode :code-text="value.codeText" :code-class='`language-${value.codeType} show-language`'></MyCode>
     </el-collapse-item>
   </el-collapse>
@@ -31,7 +36,8 @@ export default {
       codeArray: [],
       total: 0,
       size: 3,
-      current: 1
+      current: 1,
+      activeNames: []
     };
   },
   created() {
@@ -47,11 +53,30 @@ export default {
         // this.$forceUpdate();
       });
 
-      this.getTotal();
+      await this.getTotal();
+      console.log("if:");
+      if (this.total === 0) {
+        this.$message({
+          message: '搜索的代码标题不存在!!',
+          type: 'warning',
+          duration: 1000
+        });
+        console.log("跳转");
+        await this.$router.push("/");
+      }
     },
 
-    getTotal() {
-      this.$axios.get('http://127.0.0.1:9090/code/page/total/' + this.codeTitle)
+    async pageTurning() {
+      this.activeNames = [];
+      await this.getCodes();
+      this.$nextTick(() => {
+        Prism.highlightAll();
+      });
+
+    },
+
+    async getTotal() {
+      await this.$axios.get('http://127.0.0.1:9090/code/page/total/' + this.codeTitle)
           .then((response) => {
             console.log(response.data);
             this.total = response.data;
@@ -68,17 +93,24 @@ export default {
 
     next() {
       this.current ++;
-      this.getCodes();
+      this.pageTurning();
     },
 
     previous() {
       this.current --;
-      this.getCodes();
+      this.pageTurning();
     },
 
     currentChange(current) {
       this.current = current;
-      this.getCodes();
+      this.pageTurning();
+    },
+
+    jumpDetails(codeId) {
+      console.log(codeId);
+      const routerURL = this.$router.resolve("/code/id/" + codeId);
+
+      window.open(routerURL.href, "_blank");
     }
 
   }

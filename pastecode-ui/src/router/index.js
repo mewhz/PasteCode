@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Code from '../views/Code.vue'
+import {NotFoundError} from "core-js/internals/dom-exception-constants";
 
 Vue.use(VueRouter)
 
@@ -33,6 +34,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: () => import('../views/Login')
+  },
+  {
+    path: '*',
+    name: "NotFound",
+    component: () => import('../views/error/NotFound')
   }
 ]
 

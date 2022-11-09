@@ -25,6 +25,10 @@ public class ResultUtils {
         return new BaseResponse<>(40010, responseMessage);
     }
 
+    public static <T> BaseResponse<T> codeError(String responseMessage) {
+        return new BaseResponse<>(40020, responseMessage);
+    }
+
     /**
      * 未知错误
      * @return 错误代码与未知错误

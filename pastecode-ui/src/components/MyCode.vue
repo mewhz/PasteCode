@@ -48,7 +48,6 @@ export default {
           duration: 1200
         });
       }
-
     }
   },
   created() {

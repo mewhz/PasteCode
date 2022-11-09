@@ -28,6 +28,10 @@ export default {
         this.codeText = res.data.codeText;
         this.codeClass = `language-${res.data.codeType} show-language`;
 
+        if (this.codeText === undefined || this.codeText === ""){
+          this.$router.push("/");
+        }
+
         if (res.data.codeTitle === undefined || res.data.codeTitle === "") {
           this.codeTitle = "";
         }
