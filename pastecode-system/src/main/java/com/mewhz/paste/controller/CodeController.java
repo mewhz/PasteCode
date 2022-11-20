@@ -1,6 +1,7 @@
 package com.mewhz.paste.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import com.mewhz.paste.model.entity.Code;
 import com.mewhz.paste.service.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class CodeController {
         return result;
     }
 
+    @SaCheckLogin
     @GetMapping("/id/{id}")
     public Code findById(@PathVariable("id") Integer id){
         return codeService.getById(id);

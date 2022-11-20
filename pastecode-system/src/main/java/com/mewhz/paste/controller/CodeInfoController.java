@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 import java.util.List;
 
 @RestController
-@RequestMapping("codeInfo")
+@RequestMapping("/codeInfo")
 public class CodeInfoController {
 
     @Resource
@@ -24,7 +24,7 @@ public class CodeInfoController {
         return ResultUtils.success(codeInfoService.selectAll());
     }
 
-    @GetMapping("/{codeId}")
+    @GetMapping("codeId/{codeId}")
     public BaseResponse<CodeInfoResponse> selectByCodeId(@PathVariable Integer codeId) {
         return ResultUtils.success(codeInfoService.selectByCodeId(codeId));
     }

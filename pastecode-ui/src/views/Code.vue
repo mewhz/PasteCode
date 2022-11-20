@@ -24,19 +24,40 @@ export default {
   },
   methods: {
     load() {
-      this.$axios.get('http://127.0.0.1:9090/code/id/' + this.id).then((res) => {
-        this.codeText = res.data.codeText;
-        this.codeClass = `language-${res.data.codeType} show-language`;
+      let tokenNames  = localStorage.getItem("tokenName");
+      let tokenValue = localStorage.getItem("tokenValue");
+
+      console.log("tokenValue:", localStorage.getItem("tokenName"))
+      let headers = {};
+
+      headers[tokenNames] = tokenValue;
+
+      console.table(headers);
+
+      this.$axios.get('http://127.0.0.1:9090/code/id/' + this.id, {
+        headers: headers,
+      }).then((res) => {
+
+        res = res.data;
+        if (res.responseCode === 50000) {
+          console.log("path:", this.$route.path);
+          localStorage.setItem("path", this.$route.path);
+          this.$router.push("/login");
+          return;
+        }
+
+        this.codeText = res.codeText;
+        this.codeClass = `language-${res.codeType} show-language`;
 
         if (this.codeText === undefined || this.codeText === ""){
           this.$router.push("/");
         }
 
-        if (res.data.codeTitle === undefined || res.data.codeTitle === "") {
+        if (res.codeTitle === undefined || res.codeTitle === "") {
           this.codeTitle = "";
         }
         else {
-          this.codeTitle += res.data.codeTitle;
+          this.codeTitle += res.codeTitle;
         }
 
         this.$nextTick(() => {

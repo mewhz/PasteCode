@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <el-col :span="8" :offset="8">
-      <h1>账户登录</h1>
+      <h1>用户登录</h1>
       <el-form :model="user" :rules="rules" ref="ruleForm">
         <el-form-item prop="account">
           <el-input type="text" v-model="user.account" autocomplete="off" placeholder="账号"/>
@@ -59,7 +59,16 @@ export default {
 
         console.table(response.data);
 
-        if (0 === response.data.responseCode) {
+        let data = response.data;
+
+        if (0 === data.responseCode) {
+
+          let tokenValue = data.responseData.tokenValue;
+          let tokenName  = data.responseData.tokenName;
+
+          localStorage.setItem("tokenValue", tokenValue);
+          localStorage.setItem("tokenName", tokenName);
+
 
           // 弹出的信息提示
           this.$message({
@@ -68,13 +77,13 @@ export default {
             duration: 500
           });
 
-          // setTimeout(() => {
-          //   this.userJump(this.user.username);
-          // }, 500);
+          setTimeout(() => {
+            this.userJump();
+          }, 500);
 
         } else {
           this.$message({
-            message: response.data.responseMessage,
+            message: data.responseMessage,
             type: 'warning',
             duration: 1000
           });
@@ -83,11 +92,17 @@ export default {
     },
 
     // 跳转
-    async userJump(uid) {
+    async userJump() {
       // localStorage.setItem("userStatus", this.user.status);
       // localStorage.setItem("uid", this.user.username);
-
-      await this.$router.push('/home/' + uid);
+      console.log("this.path:", localStorage.getItem("path"));
+      let path = localStorage.getItem("path");
+      if (path === null) {
+        await this.$router.push('/');
+      }
+      else {
+        await this.$router.push(path);
+      }
     }
   }
 }

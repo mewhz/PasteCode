@@ -1,5 +1,8 @@
 <template>
   <el-row>
+    <span style="float:right;">
+       <el-link :underline="false" @click="jumpLogin">用户登录</el-link>
+    </span>
     <el-col :offset="5" :xs="8" :sm="6" :md="8" :lg="9" :xl="11">
       <div class="page-header">
         <h1>
@@ -150,6 +153,11 @@ export default {
       console.log(this.code.codeTitle);
       this.$router.push('/code/title/' + this.searchText);
     },
+
+    // 跳转到登录界面
+    jumpLogin() {
+      this.$router.push('/login');
+    }
 
   },
 }

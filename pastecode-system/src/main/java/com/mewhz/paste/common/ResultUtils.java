@@ -33,7 +33,7 @@ public class ResultUtils {
      * 未知错误
      * @return 错误代码与未知错误
      */
-    public static <T> BaseResponse<T> error() {
-        return new BaseResponse<>(50000, "未知错误");
+    public static <T> BaseResponse<T> error(String responseMessage) {
+        return new BaseResponse<>(50000, responseMessage);
     }
 }
