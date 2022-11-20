@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mewhz.paste.mapper.CodeMapper">
+    <resultMap id="CodeInfoVOResultMap" type="com.mewhz.paste.model.vo.CodeInfoVO">
+        <id property="codeId" column="code_id"/>
+        <result property="codeText" column="code_text"/>
+        <result property="codeType" column="code_type" />
+        <result property="codeTitle" column="code_title" />
+        <result property="codeCreateDate" column="code_create_date"/>
+        <result property="codeAuthorId" column="code_author_id"/>
+    </resultMap>
+
+    <select id="findByCodeId" resultType="com.mewhz.paste.model.vo.CodeInfoVO">
+        select * from paste_code.code, paste_code.user
+        where
+            paste_code.code.code_author_id = paste_code.user.user_id
+          and
+            paste_code.code.code_id = #{codeId};
+    </select>
+
+    <select id="userShareCode" resultMap="CodeInfoVOResultMap">
+        select paste_code.code.code_id,
+               paste_code.code.code_text,
+               paste_code.code.code_type,
+               paste_code.code.code_title,
+               paste_code.code.code_create_date,
+               paste_code.code.code_author_id
+        from paste_code.code
+        where paste_code.code.code_author_id = #{userId}
+    </select>
+
+    <select id="codeTotal" resultType="java.lang.Integer">
+        select count(1) from paste_code.code, paste_code.user
+        <where>
+            paste_code.user.user_id = paste_code.code.code_author_id
+            <if test="codeType != null">
+                and paste_code.code.code_type like concat('%', #{codeType}, '%')
+            </if>
+            <if test="codeTitle != null">
+                and paste_code.code.code_title like concat('%', #{codeTitle}, '%')
+            </if>
+            <if test="userAccount != null">
+                and paste_code.user.user_account like concat('%', #{userAccount}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="codeList" resultType="com.mewhz.paste.model.vo.CodeInfoVO">
+        select * from paste_code.code, paste_code.user
+        <where>
+            paste_code.user.user_id = paste_code.code.code_author_id
+            <if test="codeSearchVO.codeType != null">
+                and paste_code.code.code_type like concat('%', #{codeSearchVO.codeType}, '%')
+            </if>
+            <if test="codeSearchVO.codeTitle != null">
+                and paste_code.code.code_title like concat('%', #{codeSearchVO.codeTitle}, '%')
+            </if>
+            <if test="codeSearchVO.userAccount != null">
+                and paste_code.user.user_account like concat('%', #{codeSearchVO.userAccount}, '%')
+            </if>
+        </where>
+        limit #{codeSearchVO.current}, #{size}
+    </select>
+
+    <select id="codeStatusList" resultType="com.mewhz.paste.model.vo.CodeStatusInfo">
+      <if test="codeAuthorIds != null and codeAuthorIds.size() > 0">
+          select * from paste_code.code, paste_code.status, paste_code.user
+          where
+                paste_code.user.user_id = paste_code.status.user_id
+            and
+                paste_code.code.code_id = paste_code.status.code_id
+            and
+                paste_code.status.user_id != ${userId}
+            and
+                paste_code.status.code_id in
+                <foreach collection="codeAuthorIds" item="codeId" open="(" separator="," close=")">
+                    #{codeId}
+                </foreach>
+            order by paste_code.status.status_create_date desc
+      </if>
+    </select>
+
+    <select id="userCollectCode" resultType="com.mewhz.paste.model.vo.CodeStatusInfo">
+        select * from paste_code.status, paste_code.code,paste_code.user
+        where
+            paste_code.status.code_id = paste_code.code.code_id
+          and
+            paste_code.status.status_type = 0
+          and
+            paste_code.status.user_id != paste_code.code.code_author_id
+          and
+            paste_code.code.code_author_id = paste_code.user.user_id
+          and
+            paste_code.status.user_id = #{userId};
+    </select>
+</mapper>

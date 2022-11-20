@@ -15,7 +15,40 @@ const routes = [
   {
     path: '/about',
     name: 'About',
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    component: () => import('../views/About.vue')
+  },
+  {
+    path: '/admin',
+    name: 'Admin:view',
+    redirect: '/admin',
+    component: () => import(/* webpackChunkName: "about" */ '../views/Admin.vue'),
+    children:[
+      {
+        path: '/admin/',
+        name: 'Home',
+        component: () => import('../views/admin/Home')
+      },
+      {
+        path: '/admin/userManagement',
+        name: 'UserManagement',
+        component: () => import('../views/admin/UserManagement')
+      },
+      {
+        path: '/admin/codeManagement',
+        name: 'CodeManagement',
+        component: () => import('../views/admin/CodeManagement')
+      },
+      {
+        path: '/admin/logManagement',
+        name: 'LogManagement',
+        component: () => import('../views/admin/LogManagement')
+      },
+      {
+        path: '/admin/systemSetting',
+        name: 'SystemSetting',
+        component: () => import('../views/admin/SystemSetting')
+      },
+    ]
   },
   {
     /*
@@ -39,6 +72,21 @@ const routes = [
     path: '*',
     name: "NotFound",
     component: () => import('../views/error/NotFound')
+  },
+  {
+    path: '/space/:account',
+    name: "Space",
+    component: () => import('../views/Space')
+  },
+  {
+    path: '/register',
+    name: "Register",
+    component: () => import('../views/Register')
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import('../views/Admin')
   }
 ]
 

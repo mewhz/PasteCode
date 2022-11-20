@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mewhz.paste.mapper.UserMapper">
+
+    <resultMap id="UserInfoVOResultMap" type="com.mewhz.paste.model.vo.UserInfoVO">
+        <id property="userId" column="id"/>
+        <result property="userName" column="user_name" />
+        <result property="userAccount" column="user_account" />
+        <result property="userEmail" column="user_email" />
+        <result property="userCodeNum" column="user_code_num" />
+        <result property="userRole" column="user_role" />
+    </resultMap>
+
+    <select id="userTotal" resultType="java.lang.Integer">
+        select count(1) from paste_code.user
+        <where>
+            <if test="userName != null">
+                user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="userAccount != null">
+                and user_account like concat('%', #{userAccount}, '%')
+            </if>
+            <if test="userEmail != null">
+                and user_email like concat('%', #{userEmail}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="userList" resultType="com.mewhz.paste.model.entity.User">
+        select * from paste_code.user
+        <where>
+            user_id != 0
+            <if test="userSearchVO.userName != null">
+                and user_name like concat('%', #{userSearchVO.userName}, '%')
+            </if>
+            <if test="userSearchVO.userAccount != null">
+                and user_account like concat('%', #{userSearchVO.userAccount}, '%')
+            </if>
+            <if test="userSearchVO.userEmail != null">
+                and user_email like concat('%', #{userSearchVO.userEmail}, '%')
+            </if>
+        </where>
+        limit #{userSearchVO.current}, #{size}
+    </select>
+</mapper>

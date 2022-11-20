@@ -23,4 +23,6 @@ public class Code {
     private String codeText;
     private String codeType;
     private String codeTitle;
+    private String codeCreateDate;
+    private Integer codeAuthorId;
 }

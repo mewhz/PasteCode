@@ -1,63 +1,90 @@
 <template>
-  <div>
+  <div v-if="show" style="text-align: center;">
     <h1 v-text="codeTitle">Code</h1>
-<!--    <div class="line-numbers rainbow-braces match-braces no-brace-hover no-brace-select">-->
-<!--      <pre><code :class=codeClass v-text="codeText"/></pre>-->
-<!--    </div>-->
-    <MyCode :code-text="codeText" :code-class="codeClass"></MyCode>
+    <span>代码作者：{{ code.userName }}
+      <el-link :underline="false" @click="edit" v-if="userId === (code.codeAuthorId.toString())">编辑</el-link>
+    </span>
+    <span>分享时间：{{ code.codeCreateDate }}</span>
+    <pc-code-status :code="Object.assign({}, this.code)"></pc-code-status>
+    <pc-code :code="Object.assign({}, this.code)"></pc-code>
+
+
+    <el-dialog title="编辑代码" :visible.sync="updateCodeVisible" center destroy-on-close>
+      <update-code-form
+          :key="new Date().getTime()"
+          :code-prop="Object.assign({}, this.code)"
+          @exit="exit"
+          @reload="reload"></update-code-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-
 import Prism from "prismjs";
+
+import PcCode from "@/components/pc-code";
+import '@/assets/js/iconfont'
+import PcCodeStatus from "@/components/pc-code-status";
+import UpdateCodeForm from "@/components/admin/codeManagement/UpdateCodeForm";
 
 export default {
   name: "Code",
+  components: {PcCodeStatus, PcCode, UpdateCodeForm},
   data() {
     return {
+      userId: localStorage.getItem("userId"),
+      updateCodeVisible: false,
       id: "",
       codeText: '',
       codeClass: '',
-      codeTitle: '代码标题:'
+      codeTitle: ':',
+      code: {},
+      show: false,
     }
   },
   methods: {
-    load() {
-      let tokenNames  = localStorage.getItem("tokenName");
-      let tokenValue = localStorage.getItem("tokenValue");
 
-      console.log("tokenValue:", localStorage.getItem("tokenName"))
-      let headers = {};
+    edit() {
+      console.log("abc");
+      this.updateCodeVisible = true;
+    },
 
-      headers[tokenNames] = tokenValue;
+    exit() {
+      this.updateCodeVisible = false;
+    },
+    async reload() {
+      await this.load();
+      this.updateCodeVisible = false;
+    },
 
-      console.table(headers);
+    async load() {
+      await this.$axios({
+        method: "get",
+        url: `${this.$url}/code/id/${this.id}`,
+      }).then((response) => {
+        response = response.data;
+        // if (response.flag === false) {
+        //   console.log("path:", this.$route.path);
+        //   localStorage.setItem("path", this.$route.path);
+        //   this.$router.push("/login");
+        //   return;
+        // }
 
-      this.$axios.get('http://127.0.0.1:9090/code/id/' + this.id, {
-        headers: headers,
-      }).then((res) => {
+        let resp = response.data;
 
-        res = res.data;
-        if (res.responseCode === 50000) {
-          console.log("path:", this.$route.path);
-          localStorage.setItem("path", this.$route.path);
-          this.$router.push("/login");
-          return;
-        }
+        this.code = resp;
+        console.log("code", JSON.stringify(this.code));
+        this.show = true;
 
-        this.codeText = res.codeText;
-        this.codeClass = `language-${res.codeType} show-language`;
+        // if (this.codeText === undefined || this.codeText === ""){
+        //   this.$router.push("/");
+        // }
 
-        if (this.codeText === undefined || this.codeText === ""){
-          this.$router.push("/");
-        }
-
-        if (res.codeTitle === undefined || res.codeTitle === "") {
+        if (resp.codeTitle === undefined || resp.codeTitle === "") {
           this.codeTitle = "";
         }
         else {
-          this.codeTitle += res.codeTitle;
+          this.codeTitle = "代码标题:" + resp.codeTitle;
         }
 
         this.$nextTick(() => {
@@ -66,20 +93,32 @@ export default {
           // this.$forceUpdate();
         });
 
-      }).catch((err) => {
-        console.log(err);
-      });
-    }
+      })
+    },
+
+
   },
   // 初始化时加载的方法
-  created() {
+  async created() {
     // 获取到传递的参数
     this.id = this.$route.params.id;
-    this.load();
+    await this.load();
+    console.log("userId", typeof this.userId, "codeAuthorId", typeof this.code.codeAuthorId)
+    console.log(this.userId === (this.code.codeAuthorId.toString()))
   }
 }
 </script>
 
 <style scoped>
-
+.el-link {
+  font-size: 20px !important;
+}
+span {
+  margin-bottom: 10px;
+  display: block;
+  font-size: 20px;
+}
+h1 {
+  margin-bottom: 10px;
+}
 </style>

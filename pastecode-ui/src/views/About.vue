@@ -1,26 +1,27 @@
 <template>
-<div>
-  <el-input v-model="codeText"></el-input>
-  <el-button @click="myCopy">点我复制</el-button>
-</div>
+  <div>
+    <svg class="icon" aria-hidden="true" @click="up" style="font-size: 2rem">
+      <use xlink:href="#icon-dianzan" v-if="message"></use>
+      <use xlink:href="#icon-dianzanxin" v-if="!message"></use>
+    </svg>
+  </div>
 </template>
-
 <script>
-import Copy from 'copy-to-clipboard';
+
+// import '@/assets/css/iconfont.css'
+
+import '@/assets/js/iconfont'
+
 export default {
-  name: "About",
+  name: 'About',
   data() {
     return {
-      codeText: 'public static void main(String[] args){\n' +
-          '            System.our.println("Hello World");\n' +
-          '        }'
+      message: true,
     }
   },
   methods: {
-    myCopy() {
-      console.log("开始复制:" + this.codeText);
-      let flag = Copy(this.codeText);
-      console.log("复制完成:", flag);
+    up(key) {
+      this.message = ! this.message;
     }
   }
 }
@@ -28,4 +29,11 @@ export default {
 
 <style scoped>
 
+.icon {
+   width: 1em;
+   height: 1em;
+   vertical-align: -0.15em;
+   fill: currentColor;
+   overflow: hidden;
+ }
 </style>

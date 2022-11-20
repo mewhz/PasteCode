@@ -18,10 +18,14 @@ import lombok.ToString;
 @NoArgsConstructor
 public class User {
     @TableId(value = "user_id", type = IdType.AUTO)
-    private Integer id;
+    private Integer userId;
     private String userName;
     private String userAccount;
     private String userPassword;
+    private String userEmail;
+    private Integer userCodeNum;
+    private String userAvatar;
+    private Integer userRole;
 
 
 }

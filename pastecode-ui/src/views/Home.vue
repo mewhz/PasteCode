@@ -1,8 +1,6 @@
 <template>
-  <el-row>
-    <span style="float:right;">
-       <el-link :underline="false" @click="jumpLogin">用户登录</el-link>
-    </span>
+  <div>
+    <pc-header></pc-header>
     <el-col :offset="5" :xs="8" :sm="6" :md="8" :lg="9" :xl="11">
       <div class="page-header">
         <h1>
@@ -43,7 +41,8 @@
         </div>
         <div class="mt-25">
           <el-button type="primary" @click="submit()">提交</el-button>
-          <el-link :underline="false" @click="clickSearch" class="ml-5">搜索代码</el-link>
+          <el-button type="primary" @click="submitHellWorld()" class="ml-5">提交Hello World</el-button>
+          <el-link :underline="false" @click="clickSearch" class="ml-5 mr-5">搜索代码</el-link>
         </div>
         <el-dialog title="搜索代码" :visible.sync="dialogFormVisible">
             <el-input
@@ -58,13 +57,17 @@
         </el-dialog>
       </el-col>
     </el-form>
-  </el-row>
+  </div>
 </template>
 
 <script>
 
+import moment from "moment";
+import PcHeader from "@/components/pc-header";
+
 export default {
   name: 'Home',
+  components: {PcHeader},
   data() {
     let checkCodeTitle = (rule, value, callback) => {
       if (value) {
@@ -101,8 +104,22 @@ export default {
         ],
       },
       dialogFormVisible: false,
-      searchText: ''
+      searchText: '',
+      userName: '',
+      userAccount: '',
+      userId: 0,
+      codeId: ''
     }
+  },
+  mounted() {
+    this.userName = localStorage.getItem("userName");
+    this.userAccount = localStorage.getItem("userAccount");
+    this.userId = localStorage.getItem("userId");
+    document.addEventListener('keyup', (e) => {
+      if (e.key === "Enter") {
+        this.submit();
+      }
+    });
   },
   methods: {
     // 提交代码
@@ -112,14 +129,16 @@ export default {
         flag = valid;
       });
       if (!flag) return false;
-      this.$axios.post('http://127.0.0.1:9090/code/', {
+      console.log(JSON.stringify(this.code));
+      this.$axios.post(`${this.$url}/code/`, {
         "codeText": this.code.codeText,
         "codeType": this.code.codeType,
-        "codeTitle": this.code.codeTitle
-      }).then((res) => {
-        console.log(res.data);
-        if (200 === res.status) {
-
+        "codeTitle": this.code.codeTitle,
+        "codeAuthorId": this.userId
+      }).then((response) => {
+        let resp = response.data;
+        if (20000 === resp.code) {
+          resp = resp.data;
           // 弹出的信息提示
           this.$message({
             message: '提交成功！',
@@ -127,14 +146,12 @@ export default {
             duration: 500
           });
         }
-
         // 间隔 500ms 后跳转
         setTimeout(() => {
-          this.codeJump(res.data.codeId);
+          this.codeJump(resp.codeId);
         }, 500);
       });
     },
-
     // 跳转到对应的 url
     codeJump(id) {
       this.$router.push('/code/id/' + id);
@@ -154,12 +171,24 @@ export default {
       this.$router.push('/code/title/' + this.searchText);
     },
 
-    // 跳转到登录界面
-    jumpLogin() {
-      this.$router.push('/login');
+    // 提交 Hello World 测试专用
+    submitHellWorld() {
+      this.code.codeText = "package com.mewhz.paste.main;\n" +
+          "\n" +
+          "public class Main {\n" +
+          "\n" +
+          "    public static void main(String[] args) {\n" +
+          "        System.out.println(\"Hello World\");\n" +
+          "    }\n" +
+          "}\n";
+      this.code.codeTitle = moment(new Date()).format('YYYY-MM-DD--HH-mm-ss');
+      this.submit();
     }
 
   },
+  created() {
+
+  }
 }
 </script>
 

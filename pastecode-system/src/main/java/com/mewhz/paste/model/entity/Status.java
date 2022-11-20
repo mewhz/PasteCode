@@ -11,16 +11,17 @@ import lombok.ToString;
 /**
  * @author mewhz
  */
-@TableName("code_info")
 @Data
 @ToString
+@TableName("status")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CodeInfo {
+public class Status {
 
-    @TableId(value = "code_info_id", type = IdType.AUTO)
-    private Integer codeInfoId;
+    @TableId(value = "status_id", type = IdType.AUTO)
+    private Integer statusId;
     private Integer codeId;
-    private String  userAccount;
-    private String  codeInfoDate;
+    private Integer userId;
+    private Byte statusType;
+    private String statusCreateDate;
 }

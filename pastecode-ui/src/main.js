@@ -4,16 +4,17 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
+import Base from './base'
+import Print from 'vue-print-nb'
 
-import MyCode from "@/components/MyCode"
-
-
-Vue.component('MyCode', MyCode)
 
 Vue.prototype.$axios = axios
 Vue.config.productionTip = false
+Vue.prototype.$url = "http://127.0.0.1:9090"
 
 Vue.use(ElementUI);
+Vue.use(Base);
+Vue.use(Print)
 
 new Vue({
   router,

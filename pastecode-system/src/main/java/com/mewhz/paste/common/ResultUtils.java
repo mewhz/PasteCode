@@ -16,6 +16,10 @@ public class ResultUtils {
         return new BaseResponse<>(0, responseData, "ok");
     }
 
+//    public static <T> BaseResponse<T> success() {
+//
+//    }
+
     /**
      * 登录错误
      * @param responseMessage 返回的错误信息
@@ -27,6 +31,10 @@ public class ResultUtils {
 
     public static <T> BaseResponse<T> codeError(String responseMessage) {
         return new BaseResponse<>(40020, responseMessage);
+    }
+
+    public static <T> BaseResponse<T> registerError(String responseMessage) {
+        return new BaseResponse<>(40030, responseMessage);
     }
 
     /**

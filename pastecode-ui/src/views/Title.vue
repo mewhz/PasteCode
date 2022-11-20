@@ -8,7 +8,7 @@
       <el-link :underline="false" @click="jumpDetails(value.codeId)">
         <i class="el-icon-view"></i>查看详情
       </el-link>
-      <MyCode :code-text="value.codeText" :code-class='`language-${value.codeType} show-language`'></MyCode>
+      <pc-code :code="value"></pc-code>
     </el-collapse-item>
   </el-collapse>
     <el-pagination
@@ -27,9 +27,11 @@
 
 <script>
 import Prism from "prismjs";
+import PcCode from "@/components/pc-code";
 
 export default {
   name: "Title",
+  components: {PcCode},
   data() {
     return {
       codeTitle: "",
@@ -54,7 +56,6 @@ export default {
       });
 
       await this.getTotal();
-      console.log("if:");
       if (this.total === 0) {
         this.$message({
           message: '搜索的代码标题不存在!!',
@@ -76,18 +77,20 @@ export default {
     },
 
     async getTotal() {
-      await this.$axios.get('http://127.0.0.1:9090/code/page/total/' + this.codeTitle)
+      await this.$axios.get(`${this.$url}/code/page/total/${this.codeTitle}`)
           .then((response) => {
-            console.log(response.data);
-            this.total = response.data;
+            let resp = response.data;
+            console.log(resp.data);
+            this.total = resp.data;
           });
     },
 
     async getCodes() {
-      await this.$axios.get(`http://127.0.0.1:9090/code/page/${this.codeTitle}/${this.current}`)
+      await this.$axios.get(`${this.$url}/code/page/${this.codeTitle}/${this.current}`)
           .then((response) => {
-            console.log(response.data);
-            this.codeArray = response.data;
+            let resp = response.data;
+            console.log(resp.data);
+            this.codeArray = resp.data;
           });
     },
 
