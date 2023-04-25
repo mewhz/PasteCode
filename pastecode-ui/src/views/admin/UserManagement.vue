@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import UpdateUserForm from "@/components/UpdateUserForm";
+import UpdateUserForm from '@/components/admin/user-management/update-user-form';
 import InsertUserForm from "@/components/InsertUserForm";
 
 export default {

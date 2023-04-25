@@ -85,9 +85,10 @@ export default {
       this.cssLoad();
     },
     cssLoad() {
-      // 设置用户权限的选择框大小与其他输入框大小相同
+      // 设置代码语言的选择框大小与其他输入框大小相同
       let item1 = document.querySelector(".el-form-item__content");
       let item2 = document.querySelector("#select > .el-form-item__content");
+      console.log(item1, item2);
       item2.style.width = window.getComputedStyle(item1, null).width;
     },
     async submit() {
