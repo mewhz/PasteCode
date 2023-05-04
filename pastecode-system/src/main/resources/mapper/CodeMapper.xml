@@ -45,7 +45,7 @@
         </where>
     </select>
 
-    <select id="codeList" resultType="com.mewhz.paste.model.vo.CodeInfoVO">
+    <select id="codePageList" resultType="com.mewhz.paste.model.vo.CodeInfoVO">
         select * from paste_code.code, paste_code.user
         <where>
             paste_code.user.user_id = paste_code.code.code_author_id

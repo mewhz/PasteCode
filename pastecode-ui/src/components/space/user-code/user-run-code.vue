@@ -1,17 +1,17 @@
 <template>
-  <div id="user-message">
-    <el-empty :image-size="200" v-if="codeStatusInfo === null || codeStatusInfo.length === 0" description="暂无消息内容"></el-empty>
+  <div id="user-run-code">
+    <el-empty :image-size="200" v-if="codeRunInfo === null || codeRunInfo.length === 0" description="暂无消息内容"></el-empty>
     <ul class="infinite-list" v-else>
-      <li v-for="info in codeStatusInfo" class="infinite-list-item">
-        <span v-if="info.statusType === 1">
-          用户 {{ info.userName }}
-<!--          <el-link :underline="false" type="primary" @click="goCode(info.codeId)">代码</el-link>-->
-          在 {{ info.statusCreateDate }} 赞了我的
+      <li v-for="info in codeRunInfo" class="infinite-list-item">
+        <span v-if="info.runError === ''">
         <el-link :underline="false" type="primary" @click="goCode(info.codeId)">代码</el-link>
+          在 {{ info.runCreateDate }}
+          <span class="error-item">运行报错</span>
         </span>
-        <span v-if="info.statusType === 0">
-          用户 {{ info.userName }} 在 {{ info.statusCreateDate }} 收藏了我的
+        <span v-if="info.runError !== ''">
         <el-link :underline="false" type="primary" @click="goCode(info.codeId)">代码</el-link>
+          在 {{ info.runCreateDate }}
+          <span class="success-item">成功运行</span>
         </span>
       </li>
     </ul>
@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: "UserMessage",
+  name: "userRunCode",
   props: {
     userId: {
       type: Number,
@@ -28,14 +28,10 @@ export default {
   },
   data() {
     return {
-      codeStatusInfo: []
+      codeRunInfo: []
     }
   },
   methods: {
-
-    goUser(userId) {
-      this.$router.push(`/user/space/${userId}`)
-    },
 
     goCode(codeId) {
       this.$router.push(`/code/id/${codeId}`)
@@ -45,9 +41,12 @@ export default {
 
       this.$axios({
         method: "get",
-        url: `${this.$url}/code/getStatusList/${this.userId}`
+        url: `${this.$url}/code/getUserRunCodeList/${this.userId}`
       }).then((response) => {
-        this.codeStatusInfo = response.data.data;
+
+        console.log(response.data.data);
+
+        this.codeRunInfo = response.data.data;
       });
     }
   },
@@ -69,9 +68,14 @@ export default {
   height: 50px;
   background: #e8f3fe;
   margin: 10px;
-  color: #e43333
+  color: #521b1b
 }
-
+.success-item {
+  color: rgb(68, 157, 68);
+}
+.error-item {
+  color: rgb(208, 84, 81);
+}
 li {
   font-size: 16px;
 }

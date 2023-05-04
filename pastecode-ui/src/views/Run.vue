@@ -1,5 +1,6 @@
 <template>
   <div class="ace-container">
+    <pc-header></pc-header>
     <div class="ace-editor" ref="ace"></div>
 
     <div class="config-panel" v-show="toggle">
@@ -30,9 +31,17 @@
 
     <div class="bookmarklet" @click="toggleConfigPanel"></div>
 
-    <el-button @click="send">change</el-button>
+    <el-button @click="send">运行代码</el-button>
 
     <div>
+      <span>输入</span>
+      <el-card>
+        <el-input v-model="input"></el-input>
+      </el-card>
+    </div>
+
+    <div>
+      <span>输出</span>
       <el-card>
         <div v-for="(item, index) in output" :key="index">{{ item }}</div>
       </el-card>
@@ -54,6 +63,7 @@ import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/ext-language_tools'
 import 'ace-builds/src-noconflict/theme-monokai'
 import 'ace-builds/src-noconflict/mode-javascript'
+import PcHeader from "@/components/pc-header";
 
 // const themeArray = [{
 //   name: 'monokai',
@@ -98,6 +108,8 @@ const modeArray = [{
 }]
 
 export default {
+  name: "Run",
+  components: {PcHeader},
   props: {
     value: String
   },
@@ -129,7 +141,9 @@ export default {
       modePath: 'ace/mode/c_cpp',
       modeArray: modeArray,
       wrapArray: wrapArray,
+      input: '',
       output: '',
+      userId: 0
     }
   },
   methods: {
@@ -140,6 +154,7 @@ export default {
 
       let codeText = this.aceEditor.getSession().getValue();
       let codeType;
+      this.userId = localStorage.getItem("userId");
 
       if (this.modePath === "ace/mode/c_cpp")
         codeType = "cpp";
@@ -154,13 +169,22 @@ export default {
         method: 'post',
         data: {
           "codeText": codeText,
-          "codeType": codeType
+          "codeType": codeType,
+          "runInput": this.input,
+          "codeAuthorId": this.userId
         }
       }).then((response) => {
-        console.log(response.data.data);
+        console.log(response.data);
 
-        this.output = response.data.data.split("\r\n");
+        if (response.data.flag === true) {
+          let resp = response.data.data;
 
+
+          console.log(resp.runError === "")
+
+          this.output = resp.runError === "" ? resp.runOutput.split("\r\n") : resp.runError.split("\r\n");
+
+        }
         console.log(this.output);
       })
     },

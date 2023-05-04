@@ -4,8 +4,8 @@
       <el-form-item label="用户账号" prop="userAccount">
         <el-input placeholder="请输入用户账号" v-model="code.userAccount"></el-input>
       </el-form-item>
-      <el-form-item label="代码类型" prop="codeType">
-        <el-select placeholder="请选择代码类型" v-model="code.codeType" clearable>
+      <el-form-item label="代码语言" prop="codeType">
+        <el-select placeholder="请选择代码语言" v-model="code.codeType" clearable>
           <el-option
               v-for="item in types"
               :key="item.value"
@@ -53,7 +53,7 @@
         </el-table-column>
         <el-table-column
             prop="codeType"
-            label="代码类型">
+            label="代码语言">
         </el-table-column>
         <el-table-column
             prop="codeTitle"
@@ -206,7 +206,7 @@ export default {
       console.log(JSON.stringify(this.code));
       await this.$axios({
         method: "get",
-        url: `${this.$url}/code/list`,
+        url: `${this.$url}/code/pageList`,
         params: {
           "userAccount": this.code.userAccount,
           "codeTitle": this.code.codeTitle,

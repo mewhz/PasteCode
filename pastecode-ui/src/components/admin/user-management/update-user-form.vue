@@ -19,7 +19,7 @@
       <el-form-item label="电子邮箱" prop="userEmail" required>
         <el-input v-model="user.userEmail" placeholder="请输入电子邮箱" size="medium"></el-input>
       </el-form-item>
-      <el-form-item id="select" label="用户权限" required>
+      <el-form-item id="select" label="用户权限" required v-if="urlContainsAdmin">
         <el-select v-model="user.userRoleStr">
           <el-option
               key="1"
@@ -34,10 +34,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="修改密码" prop="userPassword" style="margin-left: 11px;">
-        <el-input v-model="user.userPassword" placeholder="请输入用户密码" size="medium"></el-input>
+        <el-input v-model="user.userPassword" placeholder="请输入用户密码" size="medium" type="password"></el-input>
       </el-form-item>
       <el-form-item label="确认密码" prop="userAgainPassword" style="margin-left: 11px;">
-        <el-input v-model="user.userAgainPassword" placeholder="请再次输入密码" size="medium"></el-input>
+        <el-input v-model="user.userAgainPassword" placeholder="请再次输入密码" size="medium" type="password"></el-input>
       </el-form-item>
     </el-form>
     <div id="button-group">
@@ -56,7 +56,20 @@ export default {
     }
   },
   data() {
+    let checkPassword = (rule, value, callback) => {
+      if (this.user.userPassword === null || this.user.userPassword === undefined) return;
+
+      if (value === undefined) {
+        callback(new Error('请再次输入密码'))
+      }
+
+      if (value !== this.user.userPassword) {
+        callback(new Error('两次输入的密码不一致'))
+      }
+
+    };
     return {
+      urlContainsAdmin: true,
       user: this.userProp,
       imageUrl: '',
       url: `${this.$url}/user/upload`,
@@ -68,6 +81,9 @@ export default {
           {required: true, message: '请输入电子邮箱', trigger: 'blur'},
           // {pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$', message: '请输入正确的电子邮箱', trigger: 'blur'}
         ],
+        userAgainPassword: [
+          { validator: checkPassword, trigger: 'blur' }
+        ]
       },
     }
   },
@@ -83,38 +99,47 @@ export default {
       if (!flag) return false;
 
 
-      this.userRole = this.userRoleStr === "管理员" ? 1 : 0;
+      this.user.userRole = this.user.userRoleStr === "管理员" ? 1 : 0;
 
       console.log("user:", JSON.stringify(this.user))
 
-      // this.$axios({
-      //   method: "post",
-      //   url: `${this.$url}/user/update`,
-      //   data: {
-      //     "userName": this.user.userName,
-      //     "userPassword": this.user.userPassword,
-      //     "userEmail": this.user.userEmail,
-      //     "userRole": this.user.userRole
-      //   }
-      // }).then((response) => {
-      //   let resp = response.data;
-      //   if (resp.flag === true) {
-      //     resp = resp.data;
-      //     this.$alert("你的账号是: " + resp.userAccount, '注册成功',{
-      //       confirmButtonText: '我记下来了',
-      //       center: true,
-      //       type: 'success',
-      //     }).then(() => {
-      //       this.$emit("reload");
-      //     })
-      //   } else {
-      //     this.$message({
-      //       message: resp.message,
-      //       type: 'warning',
-      //       duration: 1000
-      //     });
-      //   }
-      // })
+      this.$axios({
+        method: "post",
+        url: `${this.$url}/user/update`,
+        data: {
+          "userId": this.user.userId,
+          "userName": this.user.userName,
+          "userPassword": this.user.userPassword,
+          "userEmail": this.user.userEmail,
+          "userRole": this.user.userRole,
+          "userAvatar": this.user.userAvatar
+        }
+      }).then((response) => {
+        let resp = response.data;
+        if (resp.flag === true) {
+          resp = resp.data;
+
+          console.log(resp);
+
+          this.$message({
+            message: '更新成功',
+            type: 'success',
+            duration: 1000
+          });
+          setTimeout((() => {
+            this.$emit('reload');
+          }), 1000);
+
+
+
+        } else {
+          this.$message({
+            message: resp.message,
+            type: 'warning',
+            duration: 1000
+          });
+        }
+      })
     },
     // 上传成功回调
     handleAvatarSuccess(res, file) {
@@ -141,13 +166,21 @@ export default {
       // 设置用户权限的选择框大小与其他输入框大小相同
       let item1 = document.querySelector(".el-form-item__content");
       let item2 = document.querySelector("#select > .el-form-item__content");
-      console.log(item1, item2);
       item2.style.width = window.getComputedStyle(item1, null).width;
     },
+    load() {
+      this.urlContainsAdmin = window.location.pathname.indexOf("admin") !== -1;
+
+      if (this.user.userAvatar != null) {
+        this.imageUrl = require("@/assets/" + this.user.userAvatar);
+      }
+      if (this.urlContainsAdmin) {
+        this.cssLoad();
+      }
+    }
   },
-  created() {
-    this.imageUrl = require("@/assets/" + this.user.userAvatar);
-    this.cssLoad();
+  mounted() {
+    this.load();
   }
 }
 </script>

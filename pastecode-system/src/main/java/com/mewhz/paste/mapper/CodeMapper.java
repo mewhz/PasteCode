@@ -23,7 +23,7 @@ public interface CodeMapper extends BaseMapper<Code> {
 
     Integer codeTotal(CodeSearchVO codeSearchVO);
 
-    List<CodeInfoVO> codeList(@Param("codeSearchVO") CodeSearchVO codeSearchVO, @Param("size") Long size);
+    List<CodeInfoVO> codePageList(@Param("codeSearchVO") CodeSearchVO codeSearchVO, @Param("size") Long size);
 
     List<CodeStatusInfo> codeStatusList(@Param("codeAuthorIds") List<Integer> codeAuthorIds, @Param("userId") Integer userId);
 

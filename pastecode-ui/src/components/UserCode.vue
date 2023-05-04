@@ -4,8 +4,8 @@
       <el-card :body-style="{ padding: '0px' }" class="mt-10" >
         <el-tabs type="border-card">
           <el-tab-pane label="分享"><user-share-code :user-id="userId"></user-share-code></el-tab-pane>
+          <el-tab-pane label="运行"><user-run-code :user-id="userId"></user-run-code></el-tab-pane>
           <el-tab-pane label="消息" v-if="showMessage"><user-message :user-id="userId"></user-message></el-tab-pane>
-<!--          <el-tab-pane label="动态"><user-all-code></user-all-code></el-tab-pane>-->
           <el-tab-pane label="收藏"><user-collect-code :user-id="userId"></user-collect-code></el-tab-pane>
         </el-tabs>
       </el-card>
@@ -15,13 +15,14 @@
 
 <script>
 import UserAllCode from "@/components/UserAllCode";
-import UserShareCode from "@/components/UserShareCode";
+import UserShareCode from "@/components/space/user-code/user-share-code";
 import UserManagement from "@/views/admin/UserManagement";
 import UserMessage from "@/components/space/user-code/user-message";
 import UserCollectCode from "@/components/space/user-code/user-collect-code";
+import UserRunCode from "@/components/space/user-code/user-run-code";
 export default {
   name: "UserCode",
-  components: {UserCollectCode, UserMessage, UserShareCode, UserAllCode},
+  components: {UserRunCode, UserCollectCode, UserMessage, UserShareCode, UserAllCode},
   data() {
     return {
       showMessage: false,

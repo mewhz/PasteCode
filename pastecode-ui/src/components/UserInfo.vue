@@ -1,8 +1,8 @@
 <template>
-  <div id="user-info">
+  <div id="user-info" v-if="show" v-loading.fullscreen.lock="loading">
     <el-col :offset="2" :span="4">
       <el-card :body-style="{ padding: '0px' }" class="mt-10">
-        <el-image :preview-src-list="srcList" :src="srcList[0]" class="mt-10" fit="cover" style="width: 90%"/>
+        <el-image :preview-src-list="srcList" :src="srcList[0]"  class="mt-10" fit="cover" style="width: 90%"/>
         <div style="padding: 14px;">
           <span><b>{{ user.userName }}</b></span>
         </div>
@@ -17,16 +17,14 @@
       </el-card>
     </el-col>
 
+    <el-backtop :visibility-height="0"></el-backtop>
 
     <el-dialog :visible.sync="editUserVisible" center destroy-on-close title="修改个人资料">
-      <!--      <update-user-form-->
-      <!--          :user-prop="Object.assign({}, this.userProp)"-->
-      <!--          :key="new Date().getTime()"-->
-      <!--          @exit="exit"-->
-      <!--          @reload="reload"></update-user-form>-->
       <update-user-form
           :user-prop="Object.assign({}, this.user)"
-          :key="new Date().getTime()"></update-user-form>
+          :key="new Date().getTime()"
+          @exit="exit"
+          @reload="reload"></update-user-form>
     </el-dialog>
 
   </div>
@@ -41,6 +39,8 @@ export default {
   components: {UpdateUserForm},
   data() {
     return {
+      loading: true,
+      show: false,
       srcList: [],
       editUserVisible: false,
       userAccountStorage: localStorage.getItem("userAccount"),
@@ -48,18 +48,42 @@ export default {
     }
   },
   methods: {
-    load() {
-      this.$axios({
+
+    exit() {
+      this.editUserVisible = false;
+    },
+
+    async reload() {
+      await this.load();
+      this.editUserVisible = false;
+      this.$router.go(0);
+    },
+
+    async load() {
+
+      console.log("调用load", this.user.userAccount);
+
+      await this.$axios({
         method: "get",
-        url: `${this.$url}/user/info/${this.user.account}`
+        url: `${this.$url}/user/info/${this.user.userAccount}`
       }).then((response) => {
 
         let resp = response.data.data;
 
+        console.log("user", JSON.stringify(this.user));
+
+        console.log(response);
+
         this.user = resp;
 
+        localStorage.setItem("userName", this.user.userName);
 
         this.srcList[0] = require("@/assets/" + resp.userAvatar);
+
+        setTimeout(() => {
+          this.loading = false;
+        }, 150);
+
         // this.user.userAvatar = this.srcList[0];
 
       })
@@ -69,10 +93,10 @@ export default {
       this.editUserVisible = true;
     }
   },
-  mounted() {
-    this.user.account = this.$route.params.account;
-    this.load();
-    console.log(this.userAccountStorage, this.user.account)
+  async mounted() {
+    this.user.userAccount = this.$route.params.account;
+    await this.load();
+    this.show = true;
   }
 }
 </script>

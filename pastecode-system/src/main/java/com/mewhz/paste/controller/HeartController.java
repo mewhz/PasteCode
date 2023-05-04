@@ -1,22 +1,10 @@
 package com.mewhz.paste.controller;
 
-import com.mewhz.paste.model.entity.Code;
-import com.mewhz.paste.model.entity.User;
-import com.mewhz.paste.model.vo.ResultVO;
-import com.mewhz.paste.model.vo.UserRegisterVO;
 import com.mewhz.paste.service.CodeService;
-import com.mewhz.paste.service.UserService;
-import lombok.SneakyThrows;
-import net.datafaker.Faker;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * @author mewhz
@@ -27,6 +15,7 @@ public class HeartController {
 
     @Resource
     private CodeService codeService;
+
 
 //    @GetMapping("/login")
 //    public SaTokenInfo login() {
@@ -72,21 +61,4 @@ public class HeartController {
 //
 //    }
 
-    @SneakyThrows
-    @GetMapping("/download/{codeId}")
-    public void download(HttpServletResponse response, @PathVariable String codeId) {
-        response.reset();
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-disposition",
-                "attachment;filename=file_" + System.currentTimeMillis() + ".txt");
-
-        Code code = codeService.getById(codeId);
-
-        byte[] bytes = code.getCodeText().getBytes();
-
-        System.out.println(bytes.length);
-
-        response.getOutputStream().write(bytes);
-
-    }
 }

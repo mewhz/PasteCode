@@ -48,7 +48,7 @@ public class UserController {
 
     @PostMapping("/update")
     public ResultVO<Boolean> update(@RequestBody User user) {
-        return ResultVO.ok(userService.updateById(user));
+        return ResultVO.ok(userService.updateUser(user));
     }
 
     @PostMapping("/delete")

@@ -8,6 +8,9 @@
     <pc-code-status :code="Object.assign({}, this.code)"></pc-code-status>
     <pc-code :code="Object.assign({}, this.code)"></pc-code>
 
+    <el-button type="primary" size="mini" @click="copyCode">点我复制代码</el-button>
+    <el-button type="primary" size="mini" @click="downCode">点我下载源码</el-button>
+    <el-button type="primary" size="mini" v-print="'#print'">点我下载PDF</el-button>
 
     <el-dialog title="编辑代码" :visible.sync="updateCodeVisible" center destroy-on-close>
       <update-code-form
@@ -26,6 +29,7 @@ import PcCode from "@/components/pc-code";
 import '@/assets/js/iconfont'
 import PcCodeStatus from "@/components/pc-code-status";
 import UpdateCodeForm from "@/components/admin/codeManagement/UpdateCodeForm";
+import Copy from "copy-to-clipboard";
 
 export default {
   name: "Code",
@@ -43,6 +47,48 @@ export default {
     }
   },
   methods: {
+
+    downCode() {
+      console.log("codeId", this.code.codeId);
+
+      this.$axios({
+        method: "get",
+        url: `${this.$url}/code/download/${this.code.codeId}`,
+        responseType: "blob"
+      }).then((response) => {
+        const cd = response.headers["content-disposition"];
+        const title = cd.substring(cd.indexOf("'") + 2, cd.length);
+        const fileName = decodeURI(decodeURI(title));
+
+        let blob = new Blob([response.data]);
+        let url = window.URL.createObjectURL(blob);
+        let a = document.createElement('a');
+
+        a.href = url;
+        a.download = fileName;
+        a.click();
+
+        window.URL.revokeObjectURL(url);
+      });
+    },
+    copyCode() {
+      // 设置格式化类型，防止有些软件换行符不会被处理
+      let flag = Copy(this.code.codeText, { format: 'text/plain' });
+      if (flag) {
+        this.$message({
+          message: '复制成功, 快去粘贴给小伙伴吧!!',
+          type: 'success',
+          duration: 1200
+        });
+      }
+      else {
+        this.$message({
+          message: '复制失败, 请联系管理员..',
+          type: 'error',
+          duration: 1200
+        });
+      }
+    },
 
     edit() {
       console.log("abc");

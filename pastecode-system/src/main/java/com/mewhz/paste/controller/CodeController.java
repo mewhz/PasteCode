@@ -1,8 +1,9 @@
 package com.mewhz.paste.controller;
 
 
-import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mewhz.paste.model.entity.Code;
+import com.mewhz.paste.model.entity.Run;
 import com.mewhz.paste.model.vo.*;
 import com.mewhz.paste.service.CodeService;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class CodeController {
 
     @GetMapping("/")
     public ResultVO<List<Code>> findAll(){
-        return ResultVO.ok(codeService.list());
+        return ResultVO.ok();
     }
 
     @PostMapping("/")
@@ -58,9 +59,9 @@ public class CodeController {
         return ResultVO.ok(codeService.userShareCode(userId));
     }
 
-    @GetMapping("/list")
-    public ResultVO<ResultPageVO<CodeInfoVO>> getList(CodeSearchVO codeSearchVO) {
-        return ResultVO.ok(codeService.getList(codeSearchVO));
+    @GetMapping("/pageList")
+    public ResultVO<ResultPageVO<CodeInfoVO>> getPageList(CodeSearchVO codeSearchVO) {
+        return ResultVO.ok(codeService.getPageList(codeSearchVO));
     }
 
     @PostMapping("/delete")
@@ -86,6 +87,11 @@ public class CodeController {
     @GetMapping("/getUserCollectList/{userId}")
     public ResultVO<List<CodeStatusInfo>> getUserCollectList(@PathVariable Integer userId) {
         return ResultVO.ok(codeService.userCollectCode(userId));
+    }
+
+    @GetMapping("/getUserRunCodeList/{userId}")
+    public ResultVO<List<Run>> getUserRunCodeList(@PathVariable Integer userId) {
+        return ResultVO.ok(codeService.getUserRunCodeList(userId));
     }
 
 }

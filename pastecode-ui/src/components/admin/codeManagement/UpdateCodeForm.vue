@@ -8,7 +8,7 @@
         <el-input v-model="code.codeTitle" placeholder="代码标题 (选填)" size="medium"></el-input>
       </el-form-item>
       <el-form-item id="select" label="代码语言" required>
-        <el-select v-model="code.codeType" placeholder="请选择代码类型" >
+        <el-select v-model="code.codeType" placeholder="请选择代码语言" >
           <el-option
             v-for="item in types"
             :key="item.value"

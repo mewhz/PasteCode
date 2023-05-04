@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.mewhz.paste.constant.UserConstant.ACCOUNT_RETRY_CYCLE;
 import static com.mewhz.paste.constant.UserConstant.USER_PAGE_NUM;
@@ -116,9 +117,12 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
                         .eq(User::getUserAccount, userAccount));
 
+        System.out.println("user = " + user);
         UserInfoVO userInfoVO = new UserInfoVO();
 
         BeanUtil.copyProperties(user, userInfoVO);
+
+        System.out.println("userInfoVO = " + userInfoVO);
 
         return userInfoVO;
     }
@@ -160,6 +164,20 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
         return user != null ? user.getUserId() : -1;
 
+    }
+
+    public Boolean updateUser(User user) {
+
+        List<User> list = this.list(new LambdaQueryWrapper<User>()
+                .eq(User::getUserEmail, user.getUserEmail()));
+
+        for (User u : list) {
+            if (!Objects.equals(u.getUserId(), user.getUserId())) {
+                throw new BizException("邮箱已存在!");
+            }
+        }
+
+        return this.updateById(user);
     }
 
 }

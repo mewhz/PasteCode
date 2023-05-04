@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mewhz.paste.mapper.CodeMapper;
+import com.mewhz.paste.mapper.RunMapper;
 import com.mewhz.paste.mapper.UserMapper;
 import com.mewhz.paste.model.entity.Code;
+import com.mewhz.paste.model.entity.Run;
 import com.mewhz.paste.model.entity.User;
 import com.mewhz.paste.model.vo.*;
 import com.mewhz.paste.utils.CodeUtils;
@@ -37,6 +39,9 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
 
     @Resource
     private CodeMapper codeMapper;
+
+    @Resource
+    private RunMapper runMapper;
 
     public CodeInfoVO findByCodeId(Integer codeId) {
         return codeMapper.findByCodeId(codeId);
@@ -95,9 +100,9 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
 
     }
 
-    public ResultPageVO<CodeInfoVO> getList(CodeSearchVO codeSearchVO) {
+    public ResultPageVO<CodeInfoVO> getPageList(CodeSearchVO codeSearchVO) {
         Integer count = codeMapper.codeTotal(codeSearchVO);
-        List<CodeInfoVO> codes = codeMapper.codeList(codeSearchVO, CODE_PAGE_NUM);
+        List<CodeInfoVO> codes = codeMapper.codePageList(codeSearchVO, CODE_PAGE_NUM);
         return new ResultPageVO<>(codes, count);
     }
 
@@ -137,12 +142,29 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
                 .collect(Collectors.toList());
 
 
-        codeAuthorIds.forEach(System.out::println);
+        if (codeAuthorIds.size() == 0) {
+            return null;
+        }
 
         return codeMapper.codeStatusList(codeAuthorIds, userId);
     }
 
     public List<CodeStatusInfo> userCollectCode(Integer userId){
         return codeMapper.userCollectCode(userId);
+    }
+
+    public List<Run> getUserRunCodeList(Integer userId) {
+        List<Integer> codeIds = this.list(new LambdaQueryWrapper<Code>()
+                .eq(Code::getCodeAuthorId, userId))
+                .stream()
+                .map(Code::getCodeId)
+                .collect(Collectors.toList());
+
+        if (codeIds.size() == 0) {
+            return null;
+        }
+
+        return runMapper.selectList(new LambdaQueryWrapper<Run>().in(Run::getCodeId, codeIds));
+
     }
 }

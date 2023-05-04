@@ -87,6 +87,16 @@ const routes = [
     path: '/admin',
     name: 'Admin',
     component: () => import('../views/Admin')
+  },
+  {
+    path: '/list',
+    name: 'List',
+    component: () => import('../views/List')
+  },
+  {
+    path: '/run',
+    name: 'Run',
+    component: () => import('../views/Run')
   }
 ]
 

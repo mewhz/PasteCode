@@ -1,28 +1,24 @@
 <template>
   <div id="pc-header">
-    <el-col>
-      <el-menu
-          :default-active="activeIndex2"
-          mode="horizontal"
-          @select="handleSelect"
-          background-color="#545c64"
-          text-color="#fff"
-          active-text-color="#ffd04b">
-        <el-menu-item index="1">首页</el-menu-item>
-        <el-menu-item index="2">代码列表</el-menu-item>
-        <el-menu-item index="3">分享代码</el-menu-item>
-        <el-dropdown id="item-login" @command="handleCommand" trigger="click">
-          <el-menu-item v-if="userName !== null">{{ userName }}</el-menu-item>
-          <el-menu-item v-else @click="jumpLogin">登录/注册</el-menu-item>
-          <el-dropdown-menu slot="dropdown" v-if="userName !== null">
-            <el-dropdown-item command="profile">个人信息</el-dropdown-item>
-            <el-dropdown-item command="space">我的空间</el-dropdown-item>
-            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
-      </el-menu>
-    </el-col>
-
+    <el-menu
+        :default-active="$route.path"
+        router
+        mode="horizontal"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b">
+      <el-menu-item index="/">首页</el-menu-item>
+      <el-menu-item index="/list">代码列表</el-menu-item>
+      <el-menu-item index="/run">运行代码</el-menu-item>
+      <el-dropdown id="item-login" @command="handleCommand" trigger="click">
+        <el-menu-item v-if="userName !== null">{{ userName }}</el-menu-item>
+        <el-menu-item v-else @click="jumpLogin">登录/注册</el-menu-item>
+        <el-dropdown-menu slot="dropdown" v-if="userName !== null">
+          <el-dropdown-item command="space">我的空间</el-dropdown-item>
+          <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+    </el-menu>
   </div>
 </template>
 
@@ -31,15 +27,12 @@ export default {
   name: "pcHeader",
   data() {
     return{
-      activeIndex2: "1",
+      activeIndex: "/",
       userName: localStorage.getItem("userName"),
       userAccount: localStorage.getItem("userAccount"),
     }
   },
   methods: {
-    handleSelect(key, keyPath) {
-      console.log(key, keyPath);
-    },
 
     // 跳转到登录界面
     jumpLogin() {
@@ -97,7 +90,7 @@ export default {
   font-size: 16px;
 }
 #item-login {
-  left: 73%;
+  left: 72%;
 }
 .el-dropdown-menu {
   left: 92% !important;
