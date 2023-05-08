@@ -185,7 +185,7 @@ export default {
             if (value.userId === this.userProp.userId) {
               this.userProp = value;
             }})
-          this.total = resp.count;
+          this.total = resp.count - 1;
 
         }
       })

@@ -24,6 +24,9 @@ public class ResultVO<T> {
 
     private T data;
 
+    public ResultVO(T data) {
+        this.data = data;
+    }
 
     public static <T> ResultVO<T> ok() {
         return resultVO(true, SUCCESS.getCode(), SUCCESS.getMessage(), null);

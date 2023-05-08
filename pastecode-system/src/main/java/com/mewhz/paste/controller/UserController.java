@@ -53,7 +53,7 @@ public class UserController {
 
     @PostMapping("/delete")
     public ResultVO<Boolean> delete(@RequestBody User user) {
-        return ResultVO.ok(userService.removeById(user));
+        return ResultVO.ok(userService.deleteUser(user));
     }
 
     @PostMapping("/upload")

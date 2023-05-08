@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mewhz.paste.mapper.RunMapper">
+    <resultMap id="RunInfoVOResultMap" type="com.mewhz.paste.model.vo.RunInfoVO">
+        <id property="runId" column="run_id"/>
+        <result property="codeId" column="code_id" />
+        <result property="codeText" column="code_text"/>
+        <result property="codeType" column="code_type" />
+        <result property="userAccount" column="user_account" />
+        <result property="userName" column="user_name" />
+        <result property="runInput" column="run_input" />
+        <result property="runOutput" column="run_output" />
+        <result property="runError" column="run_error" />
+        <result property="runCreateDate" column="run_create_date" />
+    </resultMap>
+
+    <select id="runPageList" resultType="com.mewhz.paste.model.vo.RunInfoVO">
+        select * from paste_code.user, paste_code.code, paste_code.run
+        <where>
+            paste_code.user.user_id = paste_code.code.code_author_id
+        and
+            paste_code.code.code_id = paste_code.run.code_id
+            <if test="runSearchVO.codeType != null">
+                and paste_code.code.code_type like concat('%', #{runSearchVO.codeType}, '%')
+            </if>
+            <if test="runSearchVO.userAccount != null">
+                and paste_code.user.user_account like concat('%', #{runSearchVO.userAccount}, '%')
+            </if>
+            <if test="runSearchVO.startDate != null and runSearchVO.endDate != null">
+                and paste_code.run.run_create_date between #{runSearchVO.startDate} and #{runSearchVO.endDate}
+            </if>
+        </where>
+        limit #{runSearchVO.current}, #{size}
+    </select>
+    <select id="runTotal" resultType="java.lang.Integer">
+        select count(1) from paste_code.user, paste_code.code, paste_code.run
+        <where>
+            paste_code.user.user_id = paste_code.code.code_author_id
+            and
+            paste_code.code.code_id = paste_code.run.code_id
+            <if test="codeType != null">
+                and paste_code.code.code_type like concat('%', #{codeType}, '%')
+            </if>
+            <if test="userAccount != null">
+                and paste_code.user.user_account like concat('%', #{userAccount}, '%')
+            </if>
+            <if test="startDate != null and endDate != null">
+                and paste_code.run.run_create_date between #{startDate} and #{endDate}
+            </if>
+        </where>
+    </select>
+
+</mapper>

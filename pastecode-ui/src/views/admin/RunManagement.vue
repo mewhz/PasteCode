@@ -1,6 +1,6 @@
 <template>
-  <div id="code-management">
-    <el-form inline ref="codeForm" :model="code">
+  <div id="run-management">
+    <el-form inline ref="runForm" :model="code">
       <el-form-item label="用户账号" prop="userAccount">
         <el-input placeholder="请输入用户账号" v-model="code.userAccount"></el-input>
       </el-form-item>
@@ -14,13 +14,20 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="代码标题" prop="codeTitle">
-        <el-input placeholder="请输入代码标题" v-model="code.codeTitle"></el-input>
+      <el-form-item label="创建时间" prop="">
+        <el-date-picker
+            v-model="time"
+            type="daterange"
+            align="center"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions">
+        </el-date-picker>
       </el-form-item>
       <el-button type="primary" icon="el-icon-search" @click="load">搜索</el-button>
       <el-button icon="el-icon-refresh" @click="refresh">重置</el-button>
-      <el-button plain size="small " type="success" @click="headUpdate" :disabled="updateDisabled">修改</el-button>
-      <el-button plain size="small " type="danger"  @click="headDelete" :disabled="deleteDisabled">删除</el-button>
     </el-form>
     <div id="table">
       <el-table
@@ -36,56 +43,61 @@
           </template>
         </el-table-column>
         <el-table-column
-            prop="codeId"
+            prop="runId"
             label="编号"
             width="50">
         </el-table-column>
         <el-table-column
             prop="userAccount"
-            label="用户账号"
-            width="180">
+            label="用户账号">
         </el-table-column>
         <el-table-column
             prop="userName"
-            label="用户昵称"
-            width="180">
+            label="用户昵称">
         </el-table-column>
         <el-table-column
             prop="codeType"
             label="代码语言">
         </el-table-column>
-        <el-table-column label="代码标题">
+        <el-table-column label="运行输入">
           <template slot-scope="scope">
-            <span v-if="scope.row.codeTitle != null">
-              <span v-if="scope.row.codeTitle.length > 8">
-                {{ scope.row.codeTitle.slice(0, 8) }}...
+            <span v-if="scope.row.runInput.length >= 12">
+              {{ scope.row.runInput.slice(0, 12) }}...
+            </span>
+            <span v-if="scope.row.runInput.length < 12">
+              {{ scope.row.runInput }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="运行输出">
+          <template slot-scope="scope">
+            <span v-if="scope.row.runError !== ''">
+              <span v-if="scope.row.runError.length >= 12">
+                {{ scope.row.runError.slice(0, 12) }}...
               </span>
-              <span v-if="scope.row.codeTitle.length <= 8">
-                {{ scope.row.codeTitle }}
+              <span v-if="scope.row.runError.length < 12">
+                {{ scope.row.runError.slice(0, 12) }}
+              </span>
+            </span>
+            <span v-else>
+              <span v-if="scope.row.runOutput.length >= 12">
+                {{ scope.row.runOutput.slice(0, 12) }}...
+              </span>
+              <span v-if="scope.row.runOutput.length < 12">
+                {{ scope.row.runOutput }}
               </span>
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="代码状态">
+        <el-table-column label="运行状态">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.codeStatus === '0'" type="success">分享</el-tag>
-            <el-tag v-if="scope.row.codeStatus === '1'" type="danger" >运行</el-tag>
+            <el-tag v-if="scope.row.runError === ''" type="success">运行正常</el-tag>
+            <el-tag v-if="scope.row.runError !== ''" type="danger" >运行错误</el-tag>
           </template>
         </el-table-column>
         <el-table-column
-            prop="codeCreateDate"
-            label="提交时间">
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-          </template>
+            prop="runCreateDate"
+            label="创建时间">
         </el-table-column>
       </el-table>
       <el-pagination
@@ -117,12 +129,40 @@ import Prism from "prismjs";
 
 import PcCode from "@/components/pc-code";
 import UpdateCodeForm from "@/components/admin/codeManagement/UpdateCodeForm";
+import moment from "moment";
 
 export default {
-  name: "CodeManagement",
+  name: "RunManagement",
   components: {PcCode, UpdateCodeForm},
   data() {
     return {
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
       types: [{
         value: 'java',
         label: 'Java'
@@ -133,6 +173,7 @@ export default {
         value: 'cpp',
         label: 'C/C++'
       }],
+      time: '',
       tableSelects: [],
       deleteDisabled: true,
       updateDisabled: true,
@@ -185,9 +226,7 @@ export default {
       val.length === 1 ? this.updateDisabled = false : this.updateDisabled = true;
       val.length  >  0 ? this.deleteDisabled = false : this.deleteDisabled = true;
     },
-    insert() {
 
-    },
     exit() {
       this.updateCodeVisible = false;
     },
@@ -213,17 +252,34 @@ export default {
     },
 
     async load(key) {
+
+      let startDate = null;
+      let endDate = null;
+
+      if (this.time !== null) {
+        startDate = moment(this.time[0]).format('YYYY-MM-DD');
+        endDate = moment(this.time[1]).format('YYYY-MM-DD');
+      }
+
+      if (startDate === endDate) {
+        startDate = null;
+        endDate = null;
+      }
+
+      console.log(startDate, endDate);
+
       if (key != null && key.type === "click") {
         this.current = 1;
       }
       console.log(JSON.stringify(this.code));
       await this.$axios({
         method: "get",
-        url: `${this.$url}/code/pageList`,
+        url: `${this.$url}/run/pageList`,
         params: {
           "userAccount": this.code.userAccount,
-          "codeTitle": this.code.codeTitle,
           "codeType": this.code.codeType,
+          "startDate": startDate,
+          "endDate": endDate,
           "current": this.current - 1,
         }
       }).then((response) => {
@@ -233,7 +289,7 @@ export default {
           this.codeList = resp.records;
           this.total = resp.count;
 
-          console.log(resp.records);
+          console.log(resp);
 
           this.codeList.forEach((value) => {
             if (value.codeId === this.codeProp.codeId) {
@@ -259,7 +315,8 @@ export default {
     },
 
     refresh() {
-      this.$refs['codeForm'].resetFields();
+      this.$refs['runForm'].resetFields();
+      this.time = null;
       this.load();
     },
 

@@ -6,17 +6,21 @@ import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mewhz.paste.mapper.CodeMapper;
+import com.mewhz.paste.mapper.LogMapper;
 import com.mewhz.paste.mapper.RunMapper;
 import com.mewhz.paste.model.entity.Code;
+import com.mewhz.paste.model.entity.Log;
 import com.mewhz.paste.model.entity.Run;
-import com.mewhz.paste.model.vo.CodeRunVO;
-import com.mewhz.paste.model.vo.RunResultVO;
+import com.mewhz.paste.model.vo.*;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.FileWriter;
+import java.util.List;
 
+import static com.mewhz.paste.constant.LogConstant.DELETE_LIKE;
+import static com.mewhz.paste.constant.LogConstant.RUN_CODE;
 import static com.mewhz.paste.constant.RunConstant.*;
 
 /**
@@ -30,6 +34,9 @@ public class RunService extends ServiceImpl<RunMapper, Run> {
 
     @Resource
     private RunMapper runMapper;
+
+    @Resource
+    private LogMapper logMapper;
 
     public RunResultVO receivedCode(CodeRunVO codeRunVO) {
         this.mkdirCode(codeRunVO);
@@ -114,7 +121,20 @@ public class RunService extends ServiceImpl<RunMapper, Run> {
 
         run.setCodeId(code.getCodeId());
 
+        Log log = new Log();
+
+        log.setLogInfo(codeRunVO.toString());
+        log.setLogType(RUN_CODE);
+        log.setLogIsSuccess(true);
+        this.logMapper.insert(log);
+
         this.save(run);
 
+    }
+    
+    public ResultPageVO<RunInfoVO> getPageList(RunSearchVO runSearchVO) {
+        Integer count = runMapper.runTotal(runSearchVO);
+        List<RunInfoVO> runs = runMapper.runPageList(runSearchVO, RUN_PAGE_NUM);
+        return new ResultPageVO<>(runs, count);
     }
 }

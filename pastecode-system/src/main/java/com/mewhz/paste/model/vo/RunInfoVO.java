@@ -12,15 +12,17 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class CodeInfoVO {
+public class RunInfoVO {
 
     private Integer codeId;
     private String codeText;
     private String codeType;
-    private String codeTitle;
-    private String codeStatus;
-    private String codeCreateDate;
-    private Integer codeAuthorId;
+
+    private Integer runId;
+    private String runInput;
+    private String runOutput;
+    private String runError;
+    private String runCreateDate;
 
     private String userAccount;
     private String userName;

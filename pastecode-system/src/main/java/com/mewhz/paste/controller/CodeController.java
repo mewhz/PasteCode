@@ -66,12 +66,12 @@ public class CodeController {
 
     @PostMapping("/delete")
     public ResultVO<Boolean> delete(@RequestBody Code code) {
-        return ResultVO.ok(codeService.removeById(code));
+        return ResultVO.ok(codeService.deleteCode(code));
     }
 
     @PostMapping("/update")
     public ResultVO<Boolean> update(@RequestBody Code code) {
-        return ResultVO.ok(codeService.updateById(code));
+        return ResultVO.ok(codeService.updateCode(code));
     }
 
     @GetMapping("/download/{codeId}")

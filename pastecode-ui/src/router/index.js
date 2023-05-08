@@ -44,6 +44,11 @@ const routes = [
         component: () => import('../views/admin/LogManagement')
       },
       {
+        path: '/admin/runManagement',
+        name: 'RunManagement',
+        component: () => import('../views/admin/RunManagement')
+      },
+      {
         path: '/admin/systemSetting',
         name: 'SystemSetting',
         component: () => import('../views/admin/SystemSetting')

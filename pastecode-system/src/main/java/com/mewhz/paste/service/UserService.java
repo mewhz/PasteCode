@@ -5,8 +5,10 @@ import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mewhz.paste.exception.BizException;
+import com.mewhz.paste.mapper.LogMapper;
 import com.mewhz.paste.mapper.UserMapper;
 import com.mewhz.paste.model.dto.UserSearchVO;
+import com.mewhz.paste.model.entity.Log;
 import com.mewhz.paste.model.entity.User;
 import com.mewhz.paste.model.vo.ResultPageVO;
 import com.mewhz.paste.model.vo.UserInfoVO;
@@ -17,12 +19,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.mewhz.paste.constant.UserConstant.ACCOUNT_RETRY_CYCLE;
-import static com.mewhz.paste.constant.UserConstant.USER_PAGE_NUM;
+import static com.mewhz.paste.constant.UserConstant.*;
+import static com.mewhz.paste.constant.LogConstant.*;
 
 /**
  * @author mewhz
@@ -30,8 +33,11 @@ import static com.mewhz.paste.constant.UserConstant.USER_PAGE_NUM;
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
 
-    @Autowired
+    @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private LogMapper logMapper;
 
 
     public UserInfoVO login(UserLoginVO userLoginVO) {
@@ -42,10 +48,26 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User user = userMapper.selectOne(new LambdaQueryWrapper<User>()
                         .eq(User::getUserAccount, userAccount));
 
+        Log log = new Log();
+
         if (user == null) {
+
+            log.setLogInfo(userLoginVO.toString());
+            log.setLogType(LOGIN);
+            log.setLogIsSuccess(false);
+
+            this.logMapper.insert(log);
+
             throw new BizException("用户不存在!");
         }
         else if (!user.getUserPassword().equals(userPassword)) {
+
+            log.setLogInfo(userLoginVO.toString());
+            log.setLogType(LOGIN);
+            log.setLogIsSuccess(false);
+
+            this.logMapper.insert(log);
+
             throw new BizException("密码错误!");
         }
         else if (user.getUserAccount().equals(userAccount) && user.getUserPassword().equals(userPassword)) {
@@ -62,9 +84,22 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 userInfoVO.setUserRoleStr("普通用户");
             }
 
+            log.setLogInfo(userLoginVO.toString());
+            log.setLogType(LOGIN);
+            log.setLogIsSuccess(true);
+
+            this.logMapper.insert(log);
+
             return userInfoVO;
         }
         else {
+
+            log.setLogInfo(userLoginVO.toString());
+            log.setLogType(LOGIN);
+            log.setLogIsSuccess(false);
+
+            this.logMapper.insert(log);
+
             throw new BizException("未知错误, 请联系管理员!");
         }
     }
@@ -74,7 +109,16 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         User existUser = userMapper.selectOne(new LambdaQueryWrapper<User>()
                         .eq(User::getUserEmail, userRegisterVO.getUserEmail()));
 
+        Log log = new Log();
+
         if (existUser != null) {
+
+            log.setLogInfo(userRegisterVO.toString());
+            log.setLogType(REGISTER);
+            log.setLogIsSuccess(false);
+
+            this.logMapper.insert(log);
+
             throw new BizException("邮箱已存在!");
         }
 
@@ -109,6 +153,13 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         UserInfoVO userInfoVO = new UserInfoVO();
 
         BeanUtil.copyProperties(user, userInfoVO);
+
+
+        log.setLogInfo(userRegisterVO.toString());
+        log.setLogType(REGISTER);
+        log.setLogIsSuccess(true);
+
+        this.logMapper.insert(log);
 
         return userInfoVO;
     }
@@ -171,13 +222,41 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         List<User> list = this.list(new LambdaQueryWrapper<User>()
                 .eq(User::getUserEmail, user.getUserEmail()));
 
+        Log log = new Log();
+
         for (User u : list) {
             if (!Objects.equals(u.getUserId(), user.getUserId())) {
+
+                log.setLogInfo(user.toString());
+                log.setLogType(UPDATE_USER);
+                log.setLogIsSuccess(false);
+
+                this.logMapper.insert(log);
+
                 throw new BizException("邮箱已存在!");
             }
         }
 
+        log.setLogInfo(user.toString());
+        log.setLogType(UPDATE_USER);
+        log.setLogIsSuccess(true);
+
+        this.logMapper.insert(log);
+
         return this.updateById(user);
+    }
+
+    public Boolean deleteUser(User user) {
+
+        Log log = new Log();
+
+        log.setLogInfo(user.toString());
+        log.setLogType(DELETE_USER);
+        log.setLogIsSuccess(true);
+
+        this.logMapper.insert(log);
+
+        return this.removeById(user);
     }
 
 }

@@ -20,6 +20,9 @@
             <el-menu-item index="/admin/codeManagement">
               <i class="el-icon-s-opportunity"></i>代码管理
             </el-menu-item>
+            <el-menu-item index="/admin/runManagement">
+              <i class="el-icon-s-claim"></i>运行管理
+            </el-menu-item>
             <el-menu-item index="/admin/logManagement">
               <i class="el-icon-s-order"></i>日志管理
             </el-menu-item>

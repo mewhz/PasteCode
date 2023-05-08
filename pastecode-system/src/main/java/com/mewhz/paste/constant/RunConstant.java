@@ -26,4 +26,6 @@ public interface RunConstant {
     String INT_FILE_SUFFIX = "-input.txt";
 
     String ERROR_FILE_SUFFIX = "-error.txt";
+
+    Long RUN_PAGE_NUM = 5L;
 }

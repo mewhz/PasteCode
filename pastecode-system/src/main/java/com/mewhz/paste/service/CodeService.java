@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mewhz.paste.mapper.CodeMapper;
+import com.mewhz.paste.mapper.LogMapper;
 import com.mewhz.paste.mapper.RunMapper;
 import com.mewhz.paste.mapper.UserMapper;
 import com.mewhz.paste.model.entity.Code;
+import com.mewhz.paste.model.entity.Log;
 import com.mewhz.paste.model.entity.Run;
 import com.mewhz.paste.model.entity.User;
 import com.mewhz.paste.model.vo.*;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.mewhz.paste.constant.CodeConstant.CODE_PAGE_NUM;
+import static com.mewhz.paste.constant.LogConstant.*;
 
 /**
  * @author mewhz
@@ -42,6 +45,9 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
 
     @Resource
     private RunMapper runMapper;
+
+    @Resource
+    private LogMapper logMapper;
 
     public CodeInfoVO findByCodeId(Integer codeId) {
         return codeMapper.findByCodeId(codeId);
@@ -66,6 +72,14 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
         }
 
         BeanUtil.copyProperties(code, codeInfoVO);
+
+        Log log = new Log();
+
+        log.setLogInfo(codeSubmitVO.toString());
+        log.setLogType(INSERT_CODE);
+        log.setLogIsSuccess(true);
+
+        this.logMapper.insert(log);
 
 
         return codeInfoVO;
@@ -165,6 +179,32 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
         }
 
         return runMapper.selectList(new LambdaQueryWrapper<Run>().in(Run::getCodeId, codeIds));
+    }
 
+    public Boolean deleteCode(Code code){
+
+        Log log = new Log();
+
+        log.setLogInfo(code.toString());
+        log.setLogType(DELETE_CODE);
+        log.setLogIsSuccess(true);
+
+        this.logMapper.insert(log);
+
+        return this.removeById(code);
+    }
+
+
+    public Boolean updateCode(Code code){
+
+        Log log = new Log();
+
+        log.setLogInfo(code.toString());
+        log.setLogType(UPDATE_CODE);
+        log.setLogIsSuccess(true);
+
+        this.logMapper.insert(log);
+
+        return this.updateById(code);
     }
 }
