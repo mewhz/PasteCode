@@ -1,8 +1,6 @@
 package com.mewhz.paste.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.mewhz.paste.mapper.LogMapper;
 import com.mewhz.paste.model.entity.Code;
 import com.mewhz.paste.model.entity.Run;
 import com.mewhz.paste.model.vo.*;
