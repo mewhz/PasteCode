@@ -2,6 +2,7 @@ package com.mewhz.paste.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.extra.cglib.CglibUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -75,7 +76,7 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
 
         Log log = new Log();
 
-        log.setLogInfo(codeSubmitVO.toString());
+        log.setLogInfo(JSONUtil.toJsonStr(codeSubmitVO));
         log.setLogType(INSERT_CODE);
         log.setLogIsSuccess(true);
 
@@ -185,7 +186,7 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
 
         Log log = new Log();
 
-        log.setLogInfo(code.toString());
+        log.setLogInfo(JSONUtil.toJsonStr(code));
         log.setLogType(DELETE_CODE);
         log.setLogIsSuccess(true);
 
@@ -199,12 +200,34 @@ public class CodeService extends ServiceImpl<CodeMapper, Code> {
 
         Log log = new Log();
 
-        log.setLogInfo(code.toString());
+        log.setLogInfo(JSONUtil.toJsonStr(code));
         log.setLogType(UPDATE_CODE);
         log.setLogIsSuccess(true);
 
         this.logMapper.insert(log);
 
         return this.updateById(code);
+    }
+
+    public Long getShareTotal() {
+        return this.count(new LambdaQueryWrapper<Code>()
+                        .eq(Code::getCodeStatus, 0));
+    }
+
+    public Long getRunTotal() {
+        return this.count(new LambdaQueryWrapper<Code>()
+                        .eq(Code::getCodeStatus, 1));
+    }
+
+    public List<CodePieInfo> getCodePieInfo() {
+        return codeMapper.codePieInfo();
+    }
+
+    public List<CodeHeatmapInfo> getCodeDate(Long year) {
+        return codeMapper.codeDate(year);
+    }
+
+    public List<CodeHeatmapInfo> getUserCodeDate(Long year, Integer userId) {
+        return codeMapper.userCodeDate(year, userId);
     }
 }

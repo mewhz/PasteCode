@@ -3,15 +3,15 @@
     <el-empty :image-size="200" v-if="codeRunInfo === null || codeRunInfo.length === 0" description="暂无消息内容"></el-empty>
     <ul class="infinite-list" v-else>
       <li v-for="info in codeRunInfo" class="infinite-list-item">
-        <span v-if="info.runError === ''">
+        <span v-if="info.runError !== ''">
         <el-link :underline="false" type="primary" @click="goCode(info.codeId)">代码</el-link>
           在 {{ info.runCreateDate }}
           <span class="error-item">运行报错</span>
         </span>
-        <span v-if="info.runError !== ''">
+        <span v-if="info.runError === ''">
         <el-link :underline="false" type="primary" @click="goCode(info.codeId)">代码</el-link>
           在 {{ info.runCreateDate }}
-          <span class="success-item">成功运行</span>
+          <span class="success-item">运行成功</span>
         </span>
       </li>
     </ul>

@@ -1,4 +1,4 @@
-package com.mewhz.paste.model.dto;
+package com.mewhz.paste.model.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

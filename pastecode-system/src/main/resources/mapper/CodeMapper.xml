@@ -93,4 +93,27 @@
           and
             paste_code.status.user_id = #{userId};
     </select>
+    <select id="codePieInfo" resultType="com.mewhz.paste.model.vo.CodePieInfo">
+        select count(*) as code_type_total, paste_code.code.code_type from paste_code.code
+        group by paste_code.code.code_type
+    </select>
+    <select id="codeDate" resultType="com.mewhz.paste.model.vo.CodeHeatmapInfo">
+        select count(*) as code_create_date_total,
+               date_format(paste_code.code.code_create_date, '%Y-%m-%d') as code_create_date
+        from paste_code.code
+        where date_format(paste_code.code.code_create_date, '%Y') = #{year}
+        group by date_format(paste_code.code.code_create_date, '%Y-%m-%d')
+    </select>
+    <select id="userCodeDate" resultType="com.mewhz.paste.model.vo.CodeHeatmapInfo">
+        select count(*) as code_create_date_total,
+               date_format(paste_code.code.code_create_date, '%Y-%m-%d') as code_create_date
+        from paste_code.code, paste_code.user
+        where
+            date_format(paste_code.code.code_create_date, '%Y') = #{year}
+          and
+            paste_code.code.code_author_id = paste_code.user.user_id
+          and
+            paste_code.user.user_id = #{userId}
+        group by date_format(paste_code.code.code_create_date, '%Y-%m-%d')
+    </select>
 </mapper>

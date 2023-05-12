@@ -4,6 +4,8 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.file.FileReader;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.RuntimeUtil;
+import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mewhz.paste.mapper.CodeMapper;
 import com.mewhz.paste.mapper.LogMapper;
@@ -123,7 +125,7 @@ public class RunService extends ServiceImpl<RunMapper, Run> {
 
         Log log = new Log();
 
-        log.setLogInfo(codeRunVO.toString());
+        log.setLogInfo(JSONUtil.toJsonStr(codeRunVO));
         log.setLogType(RUN_CODE);
         log.setLogIsSuccess(true);
         this.logMapper.insert(log);
@@ -136,5 +138,18 @@ public class RunService extends ServiceImpl<RunMapper, Run> {
         Integer count = runMapper.runTotal(runSearchVO);
         List<RunInfoVO> runs = runMapper.runPageList(runSearchVO, RUN_PAGE_NUM);
         return new ResultPageVO<>(runs, count);
+    }
+
+    public CodeRunInfoVO isRun(Integer codeId) {
+        Run run = this.getOne(new LambdaQueryWrapper<Run>()
+                .eq(Run::getCodeId, codeId));
+
+        CodeRunInfoVO result = new CodeRunInfoVO();
+
+        result.setIsRun(run != null);
+
+        BeanUtil.copyProperties(run, result);
+
+        return result;
     }
 }

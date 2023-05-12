@@ -102,6 +102,11 @@ const routes = [
     path: '/run',
     name: 'Run',
     component: () => import('../views/Run')
+  },
+  {
+    path: '/diff',
+    name: 'Diff',
+    component: () => import('../views/Diff')
   }
 ]
 

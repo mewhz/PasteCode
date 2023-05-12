@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mewhz.paste.mapper.LogMapper">
+
+    <select id="logTotal" resultType="java.lang.Integer">
+        select count(1) from paste_code.log
+        <where>
+            <if test="logType != null">
+                and paste_code.log.log_type like concat('%' #{logType}, '%')
+            </if>
+            <if test="startDate != null and endDate != null">
+                and paste_code.log.log_create_date between #{startDate} and #{endDate}
+            </if>
+        </where>
+    </select>
+
+    <select id="logPageList" resultType="com.mewhz.paste.model.entity.Log">
+        select * from (
+        select * from paste_code.log
+        <where>
+            <if test="logSearchVO.logType != null">
+                and paste_code.log.log_type = #{logSearchVO.logType}
+            </if>
+            <if test="logSearchVO.startDate != null and logSearchVO.endDate != null">
+                and paste_code.log.log_create_date between #{logSearchVO.startDate} and #{logSearchVO.endDate}
+            </if>
+        </where>
+        order by paste_code.log.log_create_date desc
+        ) as log
+        limit #{logSearchVO.current}, #{size}
+    </select>
+    <select id="logTotalList" resultType="com.mewhz.paste.model.dto.LogTypeInfoTotalDTO">
+        select count(paste_code.log.log_type) as log_type_total,
+               paste_code.log.log_type from paste_code.log
+        group by paste_code.log.log_type;
+    </select>
+</mapper>

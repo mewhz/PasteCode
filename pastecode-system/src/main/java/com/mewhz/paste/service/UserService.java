@@ -2,12 +2,13 @@ package com.mewhz.paste.service;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mewhz.paste.exception.BizException;
 import com.mewhz.paste.mapper.LogMapper;
 import com.mewhz.paste.mapper.UserMapper;
-import com.mewhz.paste.model.dto.UserSearchVO;
+import com.mewhz.paste.model.vo.UserSearchVO;
 import com.mewhz.paste.model.entity.Log;
 import com.mewhz.paste.model.entity.User;
 import com.mewhz.paste.model.vo.ResultPageVO;
@@ -16,7 +17,6 @@ import com.mewhz.paste.model.vo.UserLoginVO;
 import com.mewhz.paste.model.vo.UserRegisterVO;
 import com.mewhz.paste.utils.UserUtils;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -52,7 +52,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
         if (user == null) {
 
-            log.setLogInfo(userLoginVO.toString());
+            log.setLogInfo(JSONUtil.toJsonStr(userLoginVO));
             log.setLogType(LOGIN);
             log.setLogIsSuccess(false);
 
@@ -62,7 +62,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
         else if (!user.getUserPassword().equals(userPassword)) {
 
-            log.setLogInfo(userLoginVO.toString());
+            log.setLogInfo(JSONUtil.toJsonStr(userLoginVO));
             log.setLogType(LOGIN);
             log.setLogIsSuccess(false);
 
@@ -84,7 +84,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
                 userInfoVO.setUserRoleStr("普通用户");
             }
 
-            log.setLogInfo(userLoginVO.toString());
+            log.setLogInfo(JSONUtil.toJsonStr(userLoginVO));
             log.setLogType(LOGIN);
             log.setLogIsSuccess(true);
 
@@ -94,7 +94,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         }
         else {
 
-            log.setLogInfo(userLoginVO.toString());
+            log.setLogInfo(JSONUtil.toJsonStr(userLoginVO));
             log.setLogType(LOGIN);
             log.setLogIsSuccess(false);
 
@@ -113,7 +113,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
         if (existUser != null) {
 
-            log.setLogInfo(userRegisterVO.toString());
+            log.setLogInfo(JSONUtil.toJsonStr(userRegisterVO));
             log.setLogType(REGISTER);
             log.setLogIsSuccess(false);
 
@@ -155,7 +155,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         BeanUtil.copyProperties(user, userInfoVO);
 
 
-        log.setLogInfo(userRegisterVO.toString());
+        log.setLogInfo(JSONUtil.toJsonStr(userRegisterVO));
         log.setLogType(REGISTER);
         log.setLogIsSuccess(true);
 
@@ -227,7 +227,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         for (User u : list) {
             if (!Objects.equals(u.getUserId(), user.getUserId())) {
 
-                log.setLogInfo(user.toString());
+                log.setLogInfo(JSONUtil.toJsonStr(user));
                 log.setLogType(UPDATE_USER);
                 log.setLogIsSuccess(false);
 
@@ -237,7 +237,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
             }
         }
 
-        log.setLogInfo(user.toString());
+        log.setLogInfo(JSONUtil.toJsonStr(user));
         log.setLogType(UPDATE_USER);
         log.setLogIsSuccess(true);
 
@@ -250,13 +250,17 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
         Log log = new Log();
 
-        log.setLogInfo(user.toString());
+        log.setLogInfo(JSONUtil.toJsonStr(user));
         log.setLogType(DELETE_USER);
         log.setLogIsSuccess(true);
 
         this.logMapper.insert(log);
 
         return this.removeById(user);
+    }
+
+    public Long userTotal() {
+        return this.count() - 1;
     }
 
 }

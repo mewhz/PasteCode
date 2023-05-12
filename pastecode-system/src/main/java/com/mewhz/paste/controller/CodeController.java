@@ -2,6 +2,7 @@ package com.mewhz.paste.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mewhz.paste.mapper.LogMapper;
 import com.mewhz.paste.model.entity.Code;
 import com.mewhz.paste.model.entity.Run;
 import com.mewhz.paste.model.vo.*;
@@ -92,6 +93,31 @@ public class CodeController {
     @GetMapping("/getUserRunCodeList/{userId}")
     public ResultVO<List<Run>> getUserRunCodeList(@PathVariable Integer userId) {
         return ResultVO.ok(codeService.getUserRunCodeList(userId));
+    }
+
+    @GetMapping("/getShareTotal")
+    public ResultVO<Long> getShareTotal() {
+        return ResultVO.ok(codeService.getShareTotal());
+    }
+
+    @GetMapping("/getRunTotal")
+    public ResultVO<Long> getRunTotal() {
+        return ResultVO.ok(codeService.getRunTotal());
+    }
+
+    @GetMapping("/getCodePieInfo")
+    public ResultVO<List<CodePieInfo>> getCodePieInfo() {
+        return ResultVO.ok(codeService.getCodePieInfo());
+    }
+
+    @GetMapping("/getCodeDate/{year}")
+    public ResultVO<List<CodeHeatmapInfo>> getCodeDate(@PathVariable Long year) {
+        return ResultVO.ok(codeService.getCodeDate(year));
+    }
+
+    @GetMapping("/getUserCodeDate/{year}/{userId}")
+    public ResultVO<List<CodeHeatmapInfo>> getUserCodeDate(@PathVariable Long year, @PathVariable Integer userId) {
+        return ResultVO.ok(codeService.getUserCodeDate(year, userId));
     }
 
 }

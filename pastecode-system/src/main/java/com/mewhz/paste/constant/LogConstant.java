@@ -31,4 +31,11 @@ public interface LogConstant {
 
     Long LOG_PAGE_NUM = 5L;
 
+    String LIKE_AND_COLLECT = "赞与收藏";
+
+    String MANAGEMENT_LOG = "系统管理";
+
+    String LOGIN_REGISTER = "登录注册";
+
+    String RUN_PASTE = "运行分享";
 }

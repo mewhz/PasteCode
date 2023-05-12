@@ -1,40 +1,29 @@
 <template>
-  <div class="ace-container">
+  <div id="diff">
     <pc-header></pc-header>
-      <el-card class="item">
-        <label class="title">语言</label>
-        <el-select class="value" v-model="modePath" @change="handleModelPathChange" size="mini" value-key="name">
-          <el-option v-for="mode in modeArray"
-                     :key="mode.name"
-                     :label="mode.name"
-                     :value="mode.path">
-          </el-option>
-        </el-select>
-        <el-button icon="el-icon-refresh"
-                   size="small"
-                   round
-                   style="margin-left: 5px"
-                   @click="refresh">重置</el-button>
-        <el-button icon="el-icon-document"
-                   size="small"
-                   round
-                   style="margin-left: 5px"
-                   @click="examples">A + B 示例代码</el-button>
-      </el-card>
-    <div class="ace-editor" ref="ace"></div>
-    <el-button @click="send" style="margin: 5px" type="primary">运行代码</el-button>
-    <div style="margin: 5px">
-      <span class="hint">输入</span>
-      <el-card>
-        <el-input v-model="input"></el-input>
-      </el-card>
-    </div>
-    <div style="margin-left: 5px">
-      <span class="hint">输出</span>
-      <el-card>
-        <div v-if="runFlag">运行中<i class="el-icon-loading"></i></div>
-        <div v-for="(item, index) in output" :key="index" v-if="!runFlag">{{ item }}</div>
-      </el-card>
+    <el-card class="item">
+      <label class="title">语言</label>
+      <el-select class="value" v-model="modePath" @change="handleModelPathChange" size="mini" value-key="name">
+        <el-option v-for="mode in modeArray"
+                   :key="mode.name"
+                   :label="mode.name"
+                   :value="mode.path">
+        </el-option>
+      </el-select>
+      <el-button icon="el-icon-refresh"
+                 size="small"
+                 round
+                 style="margin-left: 5px"
+                 @click="refresh">重置</el-button>
+    </el-card>
+    <div class="ace-editor" ref="old" @blur="compare"></div>
+    <div class="ace-editor" ref="new"></div>
+    <div id="code-diff">
+      <code-diff
+          :old-string="oldString"
+          :new-string="newString"
+          output-format="side-by-side"
+          :language="language"/>
     </div>
   </div>
 </template>
@@ -76,7 +65,7 @@ export default {
     value: String
   },
   mounted () {
-    this.aceEditor = ace.edit(this.$refs.ace, {
+    this.aceOldEditor = ace.edit(this.$refs.old, {
       maxLines: 30,
       minLines: 20,
       fontSize: 14,
@@ -87,65 +76,62 @@ export default {
       tabSize: 4
     })
     // 激活自动提示
-    this.aceEditor.setOptions({
+    this.aceOldEditor.setOptions({
       enableSnippets: true,
       enableLiveAutocompletion: true,
       enableBasicAutocompletion: true
     })
-    // this.aceEditor.getSession().on('change', this.change)
-    this.userId = localStorage.getItem("userId");
+
+
+    this.aceNewEditor = ace.edit(this.$refs.new, {
+      maxLines: 30,
+      minLines: 20,
+      fontSize: 14,
+      value: this.value ? this.value : '',
+      theme: this.themePath,
+      mode: this.modePath,
+      wrap: this.wrap,
+      tabSize: 4
+    })
+    // 激活自动提示
+    this.aceNewEditor.setOptions({
+      enableSnippets: true,
+      enableLiveAutocompletion: true,
+      enableBasicAutocompletion: true
+    })
+
+    this.aceOldEditor.getSession().on('change', this.compare);
+    this.aceNewEditor.getSession().on('change', this.compare);
   },
   data () {
     return {
       runFlag: false,
-      aceEditor: null,
+      aceOldEditor: null,
+      aceNewEditor: null,
       toggle: false,
       wrap: true,
+      language: 'cpp',
       themePath: 'ace/theme/monokai',
       modePath: 'ace/mode/c_cpp',
       modeArray: modeArray,
       wrapArray: wrapArray,
       input: '',
       output: '',
-      userId: 0
+      userId: 0,
+      oldString: '',
+      newString: '',
     }
   },
   methods: {
-    examples() {
 
-      let codeText = "";
-      console.log("abc")
-      if (this.modePath === "ace/mode/c_cpp")
-        codeText = "#include <bits/stdc++.h>\n" +
-            "using namespace std;\n" +
-            "int main() {\n" +
-            "\tint a, b;\n" +
-            "\tcin >> a >> b;\n" +
-            "\tcout << a + b << endl;\n" +
-            "\treturn 0;\n" +
-            "} "
-      else if (this.modePath === "ace/mode/java")
-        codeText = "import java.util.Scanner;\n" +
-            "\n" +
-            "public class Main {\n" +
-            "    public static void main(String[] args) {\n" +
-            "        Scanner input = new Scanner(System.in);\n" +
-            "\n" +
-            "        int a = input.nextInt();\n" +
-            "        int b = input.nextInt();\n" +
-            "\n" +
-            "        System.out.println(a + b);\n" +
-            "    }\n" +
-            "}"
-      else if (this.modePath === "ace/mode/python")
-        codeText = "(a, b) = input().split(' ')\n" +
-            "print(int(a) + int(b))\n"
-
-      this.aceEditor.getSession().setValue(codeText);
+    compare() {
+      this.oldString = this.aceOldEditor.getSession().getValue();
+      this.newString = this.aceNewEditor.getSession().getValue();
     },
 
     refresh() {
-      this.aceEditor.getSession().setValue('');
+      this.aceNewEditor.getSession().setValue('');
+      this.aceOldEditor.getSession().setValue('');
     },
 
     send() {
@@ -156,7 +142,6 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          localStorage.setItem("path", "/run");
           this.$router.push('/login');
         });
         return;
@@ -210,7 +195,15 @@ export default {
       this.$emit('input', this.aceEditor.getSession().getValue())
     },
     handleModelPathChange (modelPath) {
-      this.aceEditor.getSession().setMode(modelPath)
+      this.aceNewEditor.getSession().setMode(modelPath)
+      this.aceOldEditor.getSession().setMode(modelPath)
+
+      if (modelPath === "ace/mode/c_cpp")
+        this.language = "cpp";
+      else if (modelPath === "ace/mode/java")
+        this.language = "java";
+      else if (modelPath === "ace/mode/python")
+        this.language = "python";
     },
     handleWrapChange (wrap) {
       this.aceEditor.getSession().setUseWrapMode(wrap)
@@ -223,6 +216,8 @@ export default {
 // /deep/ 深度选择器, 根据父元素深度的找到需要改变的子元素
 .el-card /deep/ .el-card__body {
   padding: 8px!important;
+  //margin-left: 42%;
+  font-size: 20px;
 }
 .hint {
   font-size: 20px;
@@ -256,8 +251,21 @@ export default {
     border-image: initial;
   }
 }
+.ace-editor {
+  width: 48%;
+  float: left;
+  margin-right: 1%;
+  margin-left: 1%
+}
 .item {
   float: right;
   width: 100%;
+}
+.code-diff-view {
+  width: 98%;
+  margin-left: 1%;
+}
+.code-diff-view /deep/ .file-header {
+  padding: 0 !important;
 }
 </style>

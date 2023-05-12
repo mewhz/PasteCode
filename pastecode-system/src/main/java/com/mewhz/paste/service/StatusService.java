@@ -1,5 +1,6 @@
 package com.mewhz.paste.service;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mewhz.paste.mapper.LogMapper;
@@ -33,7 +34,7 @@ public class StatusService extends ServiceImpl<StatusMapper, Status> {
 
         if (statusExist == null) {
 
-            log.setLogInfo(status.toString());
+            log.setLogInfo(JSONUtil.toJsonStr(status));
 
             if (status.getStatusType() == 1) {
                 log.setLogType(INSERT_LIKE);
@@ -52,7 +53,9 @@ public class StatusService extends ServiceImpl<StatusMapper, Status> {
             status.setStatusId(statusExist.getStatusId());
 
 
-            log.setLogInfo(status.toString());
+            log.setLogInfo(JSONUtil.toJsonStr(status));
+
+            System.out.println(JSONUtil.toJsonStr(status));
 
             if (status.getStatusType() == 1) {
                 log.setLogType(DELETE_LIKE);

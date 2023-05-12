@@ -1,7 +1,7 @@
 package com.mewhz.paste.controller;
 
 
-import com.mewhz.paste.model.dto.UserSearchVO;
+import com.mewhz.paste.model.vo.UserSearchVO;
 import com.mewhz.paste.model.entity.User;
 import com.mewhz.paste.model.vo.*;
 import com.mewhz.paste.service.UserService;
@@ -69,5 +69,10 @@ public class UserController {
     @GetMapping("/getUserId/{userAccount}")
     public ResultVO<Integer> userAccountGetUserId(@PathVariable String userAccount) {
         return ResultVO.ok(userService.userAccountGetUserId(userAccount));
+    }
+
+    @GetMapping("/getUserTotal")
+    public ResultVO<Long> userTotal() {
+        return ResultVO.ok(userService.userTotal());
     }
 }

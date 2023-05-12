@@ -1,23 +1,26 @@
 <template>
-  <div>
+  <div id="list">
   <pc-header></pc-header>
-    <div class="list"
-         v-infinite-scroll="infinite"
-         :infinite-scroll-disabled="disabled">
-<!--      <ul class="infinite-list">-->
-<!--        <li v-for="i in count" class="infinite-list-item">{{ i }}</li>-->
-<!--      </ul>-->
-      <el-card v-for="code in codeList" style="margin-bottom: 50px" :key="code.codeId">
-        <span>{{ code.codeTitle }}</span>
-        <div>
-          <pc-code :code="code"></pc-code>
-        </div>
-  <!--      <el-button>展开</el-button>-->
-      </el-card>
-      <p v-if="loading">加载中...</p>
-      <p v-if="noMore">没有更多了</p>
-    </div>
-    <el-backtop target=".list"></el-backtop>
+  <div class="list"
+       v-infinite-scroll="infinite"
+       :infinite-scroll-disabled="disabled">
+    <el-input
+        placeholder="你想查询什么代码？"
+        clearable
+        v-model="search"
+        @input="selectCode"
+    ></el-input>
+    <el-card v-for="code in codeList" style="margin-bottom: 50px" :key="code.codeId">
+      <el-link id="code-title" :underline="false" @click="goCode(code.codeId)">
+        {{ code.codeTitle }}
+      </el-link>
+<!--        <span id="code-title"><b>{{ code.codeTitle }}</b></span>-->
+      <pc-code :code="code"></pc-code>
+    </el-card>
+    <p v-if="loading">加载中...</p>
+    <p v-if="noMore">没有更多了</p>
+  </div>
+  <el-backtop target=".list"></el-backtop>
   </div>
 </template>
 
@@ -32,7 +35,9 @@ export default {
       total: 0,
       codeList: [],
       current: 1,
-      size: 3,
+      size: 5,
+      search: '',
+      oldSearch: '',
       loading: false,
     }
   },
@@ -47,6 +52,11 @@ export default {
 
   },
   methods : {
+
+    selectCode(codeTitle) {
+      this.load();
+    },
+
 
     infinite() {
       // this.load();
@@ -64,14 +74,24 @@ export default {
         url: `${this.$url}/code/pageList`,
         method: 'get',
         params: {
+          "codeTitle": this.search,
           "current": this.current - 1,
         }
       }).then((response) => {
-        console.log(response.data.data.records);
+        console.log("this.oldSearch", this.oldSearch)
+        if (this.search === '' && this.oldSearch !== '') {
+          this.codeList = [];
+        }
+        if (this.search !== '') {
+          this.codeList = [];
+        }
         this.codeList = this.codeList.concat(response.data.data.records);
         this.total = response.data.data.count;
-        // this.codeList = response.data.data;
+        this.oldSearch = this.search;
       });
+    },
+    goCode(id) {
+      this.$router.push('/code/id/' + id);
     }
   },
   created() {
@@ -89,7 +109,6 @@ export default {
   overflow: auto;
 }
 
-
 .infinite-list .infinite-list-item {
   /* 设置弹性布局 */
   display: flex;
@@ -101,5 +120,20 @@ export default {
   background: #e8f3fe;
   margin: 10px;
   color: #e43333
+}
+.el-card {
+  margin-bottom: 0 !important;
+}
+#code-title {
+  text-align: center;
+  font-size: 25px;
+}
+p {
+  text-align: center;
+  font-size: 25px;
+}
+.el-input {
+  margin: 5px;
+  width: 99%;
 }
 </style>

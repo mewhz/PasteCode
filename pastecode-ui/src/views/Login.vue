@@ -100,10 +100,6 @@ export default {
 
     // 跳转
     async userJump() {
-      if (this.userRole === 1) {
-        await this.$router.push('/admin');
-        return;
-      }
       let path = localStorage.getItem("path");
       if (path === null) {
         await this.$router.push('/');

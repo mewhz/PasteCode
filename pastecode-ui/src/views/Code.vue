@@ -1,7 +1,12 @@
 <template>
   <div v-if="show" style="text-align: center;">
+    <pc-header></pc-header>
     <h1 v-text="codeTitle">Code</h1>
-    <span>代码作者：{{ code.userName }}
+    <span v-if="code.codeAuthorId !== 0">代码作者:
+      <el-link :underline="false" @click="goSpace" >{{ code.userName }}</el-link>
+      <el-link :underline="false" @click="edit" v-if="userId === (code.codeAuthorId.toString())">编辑</el-link>
+    </span>
+    <span v-if="code.codeAuthorId === 0">代码作者:游客
       <el-link :underline="false" @click="edit" v-if="userId === (code.codeAuthorId.toString())">编辑</el-link>
     </span>
     <span>分享时间：{{ code.codeCreateDate }}</span>
@@ -19,6 +24,21 @@
           @exit="exit"
           @reload="reload"></update-code-form>
     </el-dialog>
+
+    <div style="text-align: left" v-if="this.isRun">
+      <div style="margin: 5px">
+        <span class="hint">输入</span>
+        <el-card>
+          <div>{{ input }}</div>
+        </el-card>
+      </div>
+      <div style="margin-left: 5px">
+        <span class="hint">输出</span>
+        <el-card>
+          <div v-for="(item, index) in output" :key="index">{{ item }}</div>
+        </el-card>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -30,10 +50,11 @@ import '@/assets/js/iconfont'
 import PcCodeStatus from "@/components/pc-code-status";
 import UpdateCodeForm from "@/components/admin/codeManagement/UpdateCodeForm";
 import Copy from "copy-to-clipboard";
+import PcHeader from "@/components/pc-header";
 
 export default {
   name: "Code",
-  components: {PcCodeStatus, PcCode, UpdateCodeForm},
+  components: {PcHeader, PcCodeStatus, PcCode, UpdateCodeForm},
   data() {
     return {
       userId: localStorage.getItem("userId"),
@@ -44,6 +65,9 @@ export default {
       codeTitle: ':',
       code: {},
       show: false,
+      isRun: false,
+      input: '',
+      output: '',
     }
   },
   methods: {
@@ -109,12 +133,6 @@ export default {
         url: `${this.$url}/code/id/${this.id}`,
       }).then((response) => {
         response = response.data;
-        // if (response.flag === false) {
-        //   console.log("path:", this.$route.path);
-        //   localStorage.setItem("path", this.$route.path);
-        //   this.$router.push("/login");
-        //   return;
-        // }
 
         let resp = response.data;
 
@@ -122,11 +140,8 @@ export default {
         console.log("code", JSON.stringify(this.code));
         this.show = true;
 
-        // if (this.codeText === undefined || this.codeText === ""){
-        //   this.$router.push("/");
-        // }
 
-        if (resp.codeTitle === undefined || resp.codeTitle === "") {
+        if (resp.codeTitle === undefined || resp.codeTitle === "" || resp.codeTitle === null) {
           this.codeTitle = "";
         }
         else {
@@ -140,7 +155,23 @@ export default {
         });
 
       })
+
+      await this.$axios({
+        method: "get",
+        url: `${this.$url}/run/isRun/${this.code.codeId}`
+      }).then((response) => {
+        let resp = response.data.data;
+        if (resp.isRun) {
+          this.output = resp.runError === "" ? resp.runOutput.split("\r\n") : resp.runError.split("\r\n");
+          this.input  = resp.runInput;
+        }
+        this.isRun  = resp.isRun;
+      });
     },
+
+    goSpace() {
+      this.$router.push("/space/" + this.code.userAccount);
+    }
 
 
   },
@@ -158,6 +189,7 @@ export default {
 <style scoped>
 .el-link {
   font-size: 20px !important;
+  margin-right: 12px;
 }
 span {
   margin-bottom: 10px;
@@ -166,5 +198,9 @@ span {
 }
 h1 {
   margin-bottom: 10px;
+  margin-top: 0;
+}
+.hint {
+  font-size: 20px;
 }
 </style>

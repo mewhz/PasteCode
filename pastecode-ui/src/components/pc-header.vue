@@ -8,12 +8,14 @@
         text-color="#fff"
         active-text-color="#ffd04b">
       <el-menu-item index="/">首页</el-menu-item>
-      <el-menu-item index="/list">代码列表</el-menu-item>
-      <el-menu-item index="/run">运行代码</el-menu-item>
+      <el-menu-item index="/list">列表</el-menu-item>
+      <el-menu-item index="/run">运行</el-menu-item>
+      <el-menu-item index="/diff">比对</el-menu-item>
       <el-dropdown id="item-login" @command="handleCommand" trigger="click">
-        <el-menu-item v-if="userName !== null">{{ userName }}</el-menu-item>
-        <el-menu-item v-else @click="jumpLogin">登录/注册</el-menu-item>
-        <el-dropdown-menu slot="dropdown" v-if="userName !== null">
+        <el-menu-item v-show="userName !== null">{{ userName }}</el-menu-item>
+        <el-menu-item v-show="userName === null" @click="jumpLogin">登录/注册</el-menu-item>
+        <el-dropdown-menu slot="dropdown" v-show="userName !== null">
+          <el-dropdown-item command="admin" v-show="userRole === '1'">系统管理</el-dropdown-item>
           <el-dropdown-item command="space">我的空间</el-dropdown-item>
           <el-dropdown-item command="logout">退出登录</el-dropdown-item>
         </el-dropdown-menu>
@@ -30,6 +32,7 @@ export default {
       activeIndex: "/",
       userName: localStorage.getItem("userName"),
       userAccount: localStorage.getItem("userAccount"),
+      userRole: localStorage.getItem("userRole"),
     }
   },
   methods: {
@@ -44,7 +47,7 @@ export default {
     handleCommand(command) {
       if (command === "logout") this.logout();
       else if (command === "space") this.space();
-      else if (command === "profile") this.profile();
+      else if (command === "admin") this.admin();
     },
     // 退出登录
     logout() {
@@ -68,11 +71,9 @@ export default {
     space() {
       this.$router.push("/space/" + this.userAccount);
     },
-
-    profile() {
-
+    admin() {
+      this.$router.push("/admin");
     }
-
   }
 }
 </script>

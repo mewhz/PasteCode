@@ -1,11 +1,8 @@
 <template>
   <div id="log-management">
-    <el-form inline ref="codeForm" :model="code">
-      <el-form-item label="用户账号" prop="userAccount">
-        <el-input placeholder="请输入用户账号" v-model="code.userAccount"></el-input>
-      </el-form-item>
-      <el-form-item label="代码语言" prop="codeType">
-        <el-select placeholder="请选择代码语言" v-model="code.codeType" clearable>
+    <el-form inline ref="codeForm" :model="log">
+      <el-form-item label="操作类型" prop="logType">
+        <el-select placeholder="请选择操作类型" v-model="log.logType" clearable>
           <el-option
               v-for="item in types"
               :key="item.value"
@@ -14,78 +11,73 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="代码标题" prop="codeTitle">
-        <el-input placeholder="请输入代码标题" v-model="code.codeTitle"></el-input>
+      <el-form-item label="操作时间" prop="">
+        <el-date-picker
+            v-model="time"
+            type="daterange"
+            align="center"
+            unlink-panels
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            :picker-options="pickerOptions">
+        </el-date-picker>
       </el-form-item>
       <el-button type="primary" icon="el-icon-search" @click="load">搜索</el-button>
       <el-button icon="el-icon-refresh" @click="refresh">重置</el-button>
-      <el-button plain size="small " type="success" @click="headUpdate" :disabled="updateDisabled">修改</el-button>
-      <el-button plain size="small " type="danger"  @click="headDelete" :disabled="deleteDisabled">删除</el-button>
     </el-form>
     <div id="table">
       <el-table
-          :data="codeList"
+          :data="logList"
           @selection-change="handleSelectionChange">
-        <el-table-column
-            type="selection"
-            width="30">
-        </el-table-column>
-        <el-table-column type="expand" >
-          <template slot-scope="props">
-            <pc-code :code="props.row"></pc-code>
-          </template>
-        </el-table-column>
-        <el-table-column
-            prop="codeId"
-            label="编号"
-            width="50">
-        </el-table-column>
-        <el-table-column
-            prop="userAccount"
-            label="用户账号"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="userName"
-            label="用户昵称"
-            width="180">
-        </el-table-column>
-        <el-table-column
-            prop="codeType"
-            label="代码语言">
-        </el-table-column>
-        <el-table-column label="代码标题">
+        <el-table-column type="expand">
           <template slot-scope="scope">
-            <span v-if="scope.row.codeTitle != null">
-              <span v-if="scope.row.codeTitle.length > 8">
-                {{ scope.row.codeTitle.slice(0, 8) }}...
-              </span>
-              <span v-if="scope.row.codeTitle.length <= 8">
-                {{ scope.row.codeTitle }}
-              </span>
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="代码状态">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.codeStatus === '0'" type="success">分享</el-tag>
-            <el-tag v-if="scope.row.codeStatus === '1'" type="danger" >运行</el-tag>
+            <el-descriptions :column="5"
+                             border
+                             direction="vertical">
+              <el-descriptions-item
+                  v-for="(item, key, index) in scope.row.logInfo"
+                  :key="index"
+                  :label="key">
+                {{ item }}
+              </el-descriptions-item>
+            </el-descriptions>
           </template>
         </el-table-column>
         <el-table-column
-            prop="codeCreateDate"
-            label="提交时间">
+            prop="logId"
+            label="编号">
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作反馈">
           <template slot-scope="scope">
-            <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <span v-if="scope.row.logIsSuccess" style="color: #67c23a"><i class="el-icon-check" />执行成功</span>
+            <span v-if="!scope.row.logIsSuccess" style="color: #f56c6c"><i class="el-icon-close" />执行失败</span>
           </template>
+        </el-table-column>
+        <el-table-column label="操作类型">
+          <template slot-scope="scope">
+            <el-tag type="warning"
+                v-if="scope.row.logType === '登录' ||
+                      scope.row.logType === '注册'">
+              {{ scope.row.logType }}
+            </el-tag>
+            <el-tag
+                v-if="scope.row.logType.indexOf('赞') !== -1 ||
+                      scope.row.logType.indexOf('收藏') !== -1 ||
+                      scope.row.logType.indexOf('分享') !== -1">
+              {{ scope.row.logType }}
+            </el-tag>
+            <el-tag type="danger"
+                v-if="scope.row.logType.indexOf('运行') !== -1 ||
+                      scope.row.logType.indexOf('删除') !== -1 ||
+                      scope.row.logType.indexOf('更新') !== -1">
+              {{ scope.row.logType }}
+            </el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="logCreateDate"
+            label="操作时间">
         </el-table-column>
       </el-table>
       <el-pagination
@@ -99,15 +91,6 @@
       </el-pagination>
     </div>
 
-
-    <el-dialog title="编辑代码" :visible.sync="updateCodeVisible" center destroy-on-close>
-      <update-code-form
-          :key="new Date().getTime()"
-          :code-prop="Object.assign({}, this.codeProp)"
-          @exit="exit"
-          @reload="reload"></update-code-form>
-    </el-dialog>
-
   </div>
 </template>
 
@@ -117,37 +100,58 @@ import Prism from "prismjs";
 
 import PcCode from "@/components/pc-code";
 import UpdateCodeForm from "@/components/admin/codeManagement/UpdateCodeForm";
+import moment from "moment";
 
 export default {
   name: "LogManager",
   components: {PcCode, UpdateCodeForm},
   data() {
     return {
-      types: [{
-        value: 'java',
-        label: 'Java'
-      }, {
-        value: 'python',
-        label: 'Python'
-      }, {
-        value: 'cpp',
-        label: 'C/C++'
-      }],
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
+      types: [],
       tableSelects: [],
       deleteDisabled: true,
       updateDisabled: true,
-      codeList: [],
+      logList: [],
+      time: '',
       total: 0,
       current: 1,
       size: 5,
+      jsonStr: '',
       allDelete: false,
       updateCodeVisible: false,
       insertCodeVisible: false,
       codeProp: {},
-      code: {
-        userAccount: '',
-        codeType: '',
-        codTitle: '',
+      log: {
+        logId: 0,
+        logInfo: '',
+        logIsSuccess: false,
       },
       userProp: {},
       userTemp: {}
@@ -209,36 +213,76 @@ export default {
     },
 
     async init() {
+      await this.initTypes();
       await this.load();
     },
 
+    async initTypes() {
+      await this.$axios({
+        method: "get",
+        url: `${this.$url}/log/getLogType`
+      }).then((response) => {
+        console.log(response.data.data);
+
+        let typeList = response.data.data;
+
+        this.types = [];
+
+        typeList.forEach((value) => {
+          this.types.push({
+            "value": value,
+            "label": value
+          });
+        });
+
+      });
+    },
+
     async load(key) {
+
+      let startDate = null;
+      let endDate = null;
+
+      if (this.time !== null) {
+        startDate = moment(this.time[0]).format('YYYY-MM-DD');
+        endDate = moment(this.time[1]).format('YYYY-MM-DD');
+      }
+
+      if (startDate === endDate) {
+        startDate = null;
+        endDate = null;
+      }
+
       if (key != null && key.type === "click") {
         this.current = 1;
       }
-      console.log(JSON.stringify(this.code));
       await this.$axios({
         method: "get",
-        url: `${this.$url}/code/pageList`,
+        url: `${this.$url}/log/pageList`,
         params: {
-          "userAccount": this.code.userAccount,
-          "codeTitle": this.code.codeTitle,
-          "codeType": this.code.codeType,
+          "logType": this.log.logType,
+          "startDate": startDate,
+          "endDate": endDate,
           "current": this.current - 1,
         }
       }).then((response) => {
         if (response.data.flag === true) {
 
           let resp = response.data.data;
-          this.codeList = resp.records;
+          this.logList = resp.records;
           this.total = resp.count;
 
           console.log(resp.records);
 
-          this.codeList.forEach((value) => {
-            if (value.codeId === this.codeProp.codeId) {
-              this.codeProp = value;
-            }})
+          for (let log of this.logList) {
+            // \t 代表添加缩进美化
+            // log.logInfo = JSON.stringify(JSON.parse(log.logInfo), null, '\t');
+            log.logInfo = JSON.parse(log.logInfo);
+
+            for (let key in log.logInfo) {
+              console.log(key, log.logInfo[key]);
+            }
+          }
         }
       })
     },
@@ -260,6 +304,7 @@ export default {
 
     refresh() {
       this.$refs['codeForm'].resetFields();
+      this.time = null;
       this.load();
     },
 
@@ -300,5 +345,9 @@ export default {
 }
 .el-tag {
   font-size: 14px;
+}
+>>> .el-descriptions-item__cell {
+  text-align: center !important;
+  font-size: 16px;
 }
 </style>

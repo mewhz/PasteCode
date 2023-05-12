@@ -1,7 +1,7 @@
 package com.mewhz.paste.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.mewhz.paste.model.dto.UserSearchVO;
+import com.mewhz.paste.model.vo.UserSearchVO;
 import com.mewhz.paste.model.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;

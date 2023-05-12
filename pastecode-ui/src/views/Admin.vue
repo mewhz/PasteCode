@@ -27,28 +27,15 @@
               <i class="el-icon-s-order"></i>日志管理
             </el-menu-item>
           </el-submenu>
-          <el-menu-item index="/admin/systemSetting">
-            <template slot="title"><i class="el-icon-s-platform"></i>系统设置</template>
+          <el-menu-item  index="/">
+            <template slot="title"><i class="el-icon-s-promotion"></i>返回前台</template>
+          </el-menu-item>
+          <el-menu-item @click="logout" index="/">
+            <template slot="title"><i class="el-icon-s-platform"></i>退出登录</template>
           </el-menu-item>
         </el-menu>
       </el-aside>
-
-      <!--    <el-container>-->
-      <!--      <el-header style="text-align: right; font-size: 12px">-->
-      <!--        <el-dropdown>-->
-      <!--          <i class="el-icon-setting" style="margin-right: 15px"></i>-->
-      <!--          <el-dropdown-menu slot="dropdown">-->
-      <!--            <el-dropdown-item>查看</el-dropdown-item>-->
-      <!--            <el-dropdown-item>新增</el-dropdown-item>-->
-      <!--            <el-dropdown-item>删除</el-dropdown-item>-->
-      <!--          </el-dropdown-menu>-->
-      <!--        </el-dropdown>-->
-      <!--        <span>王小虎</span>-->
-      <!--      </el-header>-->
-
-      <!--      <el-main>{{ message }}</el-main>-->
       <el-main class="el-main"><router-view /></el-main>
-      <!--    </el-container>-->
     </el-container>
   </div>
 </template>
@@ -61,6 +48,11 @@ export default {
     }
   },
   methods: {
+    logout() {
+      localStorage.clear();
+
+      window.location.reload();
+    }
   }
 };
 </script>

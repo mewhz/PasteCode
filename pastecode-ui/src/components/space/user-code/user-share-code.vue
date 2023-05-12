@@ -4,8 +4,9 @@
     <el-collapse accordion>
       <el-collapse-item v-for="(value, index ) in dataList"
                         :key="index"
-                        :title="value.codeTitle"
-                        :name="index">
+                        :title="value.codeTitle === null ? '无标题': value.codeTitle"
+                        :name="index"
+                        style="text-align: left !important;">
         <el-link :underline="false" @click="jumpDetails(value.codeId)">
           <i class="el-icon-view"></i>查看详情
         </el-link>
@@ -62,5 +63,7 @@ export default {
 </script>
 
 <style scoped>
-
+>>> .el-collapse-item__content {
+  padding-bottom: 0;
+}
 </style>

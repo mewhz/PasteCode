@@ -29,4 +29,9 @@ public class RunController {
     public ResultVO<ResultPageVO<RunInfoVO>> getPageList(RunSearchVO runSearchVO) {
         return ResultVO.ok(runService.getPageList(runSearchVO));
     }
+
+    @GetMapping("/isRun/{codeId}")
+    public ResultVO<CodeRunInfoVO> isRun(@PathVariable Integer codeId) {
+        return ResultVO.ok(runService.isRun(codeId));
+    }
 }
