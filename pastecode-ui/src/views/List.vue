@@ -9,6 +9,7 @@
         clearable
         v-model="search"
         @input="selectCode"
+        style="width: 80%; margin-left: 10%"
     ></el-input>
     <el-card v-for="code in codeList" style="margin-bottom: 50px" :key="code.codeId">
       <el-link id="code-title" :underline="false" @click="goCode(code.codeId)">
@@ -43,10 +44,10 @@ export default {
   },
   computed: {
     noMore () {
+      console.log(this.current * this.size, this.total)
       return (this.current * this.size) >= this.total
     },
     disabled () {
-      console.log(this.loading || this.noMore)
       return this.loading || this.noMore
     }
 
@@ -70,6 +71,18 @@ export default {
     },
 
     load() {
+
+      if (this.search === '' && this.oldSearch !== '') {
+        this.codeList = [];
+        this.current = 1;
+        console.log("清空1")
+      }
+      if (this.search !== this.oldSearch) {
+        this.current = 1;
+        this.codeList = [];
+        console.log("清空2");
+      }
+
       this.$axios({
         url: `${this.$url}/code/pageList`,
         method: 'get',
@@ -78,13 +91,6 @@ export default {
           "current": this.current - 1,
         }
       }).then((response) => {
-        console.log("this.oldSearch", this.oldSearch)
-        if (this.search === '' && this.oldSearch !== '') {
-          this.codeList = [];
-        }
-        if (this.search !== '') {
-          this.codeList = [];
-        }
         this.codeList = this.codeList.concat(response.data.data.records);
         this.total = response.data.data.count;
         this.oldSearch = this.search;
@@ -123,6 +129,8 @@ export default {
 }
 .el-card {
   margin-bottom: 0 !important;
+  width:80%;
+  margin-left: 10%;
 }
 #code-title {
   text-align: center;

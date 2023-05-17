@@ -41,8 +41,8 @@
         </div>
         <div class="mt-25">
           <el-button type="primary" @click="submit()">提交</el-button>
-          <el-button type="primary" @click="submitHellWorld()" class="ml-5">提交Hello World</el-button>
-          <el-link :underline="false" @click="clickSearch" class="ml-5 mr-5">搜索代码</el-link>
+<!--          <el-button type="primary" @click="submitHellWorld()" class="ml-5">提交Hello World</el-button>-->
+<!--          <el-link :underline="false" @click="clickSearch" class="ml-5 mr-5">搜索代码</el-link>-->
         </div>
         <el-dialog title="搜索代码" :visible.sync="dialogFormVisible">
             <el-input

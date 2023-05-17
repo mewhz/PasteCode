@@ -11,7 +11,7 @@
     </span>
     <span>分享时间：{{ code.codeCreateDate }}</span>
     <pc-code-status :code="Object.assign({}, this.code)"></pc-code-status>
-    <pc-code :code="Object.assign({}, this.code)"></pc-code>
+    <pc-code :code="Object.assign({}, this.code)" style="width: 80%; margin-left: 10%"></pc-code>
 
     <el-button type="primary" size="mini" @click="copyCode">点我复制代码</el-button>
     <el-button type="primary" size="mini" @click="downCode">点我下载源码</el-button>
@@ -25,7 +25,7 @@
           @reload="reload"></update-code-form>
     </el-dialog>
 
-    <div style="text-align: left" v-if="this.isRun">
+    <div style="text-align: left;width: 80%; margin-left: 10%" v-if="this.isRun">
       <div style="margin: 5px">
         <span class="hint">输入</span>
         <el-card>

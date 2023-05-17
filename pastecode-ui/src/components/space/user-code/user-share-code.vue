@@ -1,6 +1,6 @@
 <template>
   <div id="user-share-code">
-    这里是用户分享的所有代码
+    <el-empty :image-size="200" v-if="dataList === null || dataList.length === 0" description="暂无分享内容"></el-empty>
     <el-collapse accordion>
       <el-collapse-item v-for="(value, index ) in dataList"
                         :key="index"

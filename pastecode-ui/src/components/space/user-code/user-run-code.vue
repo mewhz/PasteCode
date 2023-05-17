@@ -1,6 +1,6 @@
 <template>
   <div id="user-run-code">
-    <el-empty :image-size="200" v-if="codeRunInfo === null || codeRunInfo.length === 0" description="暂无消息内容"></el-empty>
+    <el-empty :image-size="200" v-if="codeRunInfo === null || codeRunInfo.length === 0" description="暂无运行内容"></el-empty>
     <ul class="infinite-list" v-else>
       <li v-for="info in codeRunInfo" class="infinite-list-item">
         <span v-if="info.runError !== ''">

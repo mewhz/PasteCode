@@ -79,7 +79,7 @@ export default {
         ],
         userEmail: [
           {required: true, message: '请输入电子邮箱', trigger: 'blur'},
-          // {pattern: '^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$', message: '请输入正确的电子邮箱', trigger: 'blur'}
+          {pattern: '^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$', message: '请输入正确的电子邮箱', trigger: 'blur'}
         ],
         userAgainPassword: [
           { validator: checkPassword, trigger: 'blur' }

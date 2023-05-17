@@ -79,10 +79,10 @@ export default {
 </script>
 
 <style scoped>
-/*
-  text-align 的默认值是 left
-  利用该属性破坏 父组件的 text-align: center 属性
-*/
+  /*
+    text-align 的默认值是 left
+    利用该属性破坏 父组件的 text-align: center 属性
+  */
 #pc-header {
   text-align: left;
 }
@@ -91,7 +91,7 @@ export default {
   font-size: 16px;
 }
 #item-login {
-  left: 72%;
+  left: 71%;
 }
 .el-dropdown-menu {
   left: 92% !important;

@@ -82,7 +82,7 @@ export default {
       else {
         this.collectNum --;
       }
-
+      console.log("userId", this.userId);
       this.$axios({
         method: "post",
         url: `${this.$url}/status/update`,
@@ -100,6 +100,9 @@ export default {
     },
 
     upLike() {
+
+      console.log("userId", this.userId);
+
       this.isLike = ! this.isLike;
       if (this.isLike) {
         this.likesNum ++;

@@ -10,7 +10,10 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: '贴代码'
+    }
   },
   {
     path: '/about',
@@ -26,32 +29,42 @@ const routes = [
       {
         path: '/admin/',
         name: 'Home',
-        component: () => import('../views/admin/Home')
+        component: () => import('../views/admin/Home'),
+        meta: {
+          title: '系统管理'
+        }
       },
       {
         path: '/admin/userManagement',
         name: 'UserManagement',
-        component: () => import('../views/admin/UserManagement')
+        component: () => import('../views/admin/UserManagement'),
+        meta: {
+          title: '用户管理'
+        }
       },
       {
         path: '/admin/codeManagement',
         name: 'CodeManagement',
-        component: () => import('../views/admin/CodeManagement')
+        component: () => import('../views/admin/CodeManagement'),
+        meta: {
+          title: '代码管理'
+        }
       },
       {
         path: '/admin/logManagement',
         name: 'LogManagement',
-        component: () => import('../views/admin/LogManagement')
+        component: () => import('../views/admin/LogManagement'),
+        meta: {
+          title: '日志管理'
+        }
       },
       {
         path: '/admin/runManagement',
         name: 'RunManagement',
-        component: () => import('../views/admin/RunManagement')
-      },
-      {
-        path: '/admin/systemSetting',
-        name: 'SystemSetting',
-        component: () => import('../views/admin/SystemSetting')
+        component: () => import('../views/admin/RunManagement'),
+        meta: {
+          title: '运行管理'
+        }
       },
     ]
   },
@@ -61,7 +74,10 @@ const routes = [
      */
     path: '/code/id/:id',
     name: 'Code',
-    component: Code
+    component: Code,
+    meta: {
+      title: '查看代码'
+    }
   },
   {
     path: '/code/title/:codeTitle',
@@ -71,22 +87,34 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: () => import('../views/Login')
+    component: () => import('../views/Login'),
+    meta: {
+      title: '用户登录'
+    }
   },
   {
     path: '*',
     name: "NotFound",
-    component: () => import('../views/error/NotFound')
+    component: () => import('../views/error/NotFound'),
+    meta: {
+      title: '404 Not Found'
+    }
   },
   {
     path: '/space/:account',
     name: "Space",
-    component: () => import('../views/Space')
+    component: () => import('../views/Space'),
+    meta: {
+      title: '个人空间'
+    }
   },
   {
     path: '/register',
     name: "Register",
-    component: () => import('../views/Register')
+    component: () => import('../views/Register'),
+    meta: {
+      title: '用户注册'
+    }
   },
   {
     path: '/admin',
@@ -96,17 +124,26 @@ const routes = [
   {
     path: '/list',
     name: 'List',
-    component: () => import('../views/List')
+    component: () => import('../views/List'),
+    meta: {
+      title: '列表'
+    }
   },
   {
     path: '/run',
     name: 'Run',
-    component: () => import('../views/Run')
+    component: () => import('../views/Run'),
+    meta: {
+      title: '运行'
+    }
   },
   {
     path: '/diff',
     name: 'Diff',
-    component: () => import('../views/Diff')
+    component: () => import('../views/Diff'),
+    meta: {
+      title: '比对'
+    }
   }
 ]
 
