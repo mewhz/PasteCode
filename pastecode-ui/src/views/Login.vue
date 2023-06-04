@@ -3,19 +3,19 @@
     <el-col :offset="8" :span="9">
       <h1 style="text-align: center">用户登录</h1>
       <el-form :model="user" :rules="rules" ref="ruleForm">
-        <el-form-item prop="account">
+        <el-form-item prop="account" label="账号">
           <el-input type="text" v-model="user.account" autocomplete="off" placeholder="账号"/>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item prop="password" label="密码">
           <el-input type="password" v-model="user.password" autocomplete="off" placeholder="密码"/>
         </el-form-item>
       </el-form>
       <div style="text-align: center">
-        <el-button @click="submit">登录</el-button>
-        <el-button @click="register">注册</el-button>
-        <el-button @click="testLogin1">星落登录</el-button>
-        <el-button @click="testLogin2">mewhz登录</el-button>
-        <el-button @click="randomLogin">{{ randomAccount }} 登录</el-button>
+        <el-button @click="submit" type="primary">登录</el-button>
+        <el-button @click="register" type="success">注册</el-button>
+<!--        <el-button @click="testLogin1">星落登录</el-button>-->
+<!--        <el-button @click="testLogin2">mewhz登录</el-button>-->
+<!--        <el-button @click="randomLogin">{{ randomAccount }} 登录</el-button>-->
       </div>
     </el-col>
   </div>
